@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { DriverSidebar } from '../components/DriverSidebar';
-import { Truck, Route, PackageCheck, CheckCircle2, Edit3, Plus, ArrowRight, MapPin, Calendar, Clock, Calculator, Scale, Navigation, LogIn } from 'lucide-react';
+import { Truck, Route, PackageCheck, CheckCircle2, Edit3, Plus, ArrowRight, MapPin, Calendar, Clock, Calculator, Scale, Navigation } from 'lucide-react';
 
 export const DriverDashboardPage = () => {
   const { currentUser, driverTrip, setDriverTrip, shipments, setCurrentView } = useApp();
@@ -20,6 +20,7 @@ export const DriverDashboardPage = () => {
     vehicleType: driverTrip?.vehicleType || 'Truck • Eicher 19ft',
     totalCapacity: driverTrip?.totalCapacity || 18,
     availableCapacity: driverTrip?.availableCapacity || 10,
+    maxWeightKg: driverTrip?.maxWeightKg || 500, // Max acceptable parcel weight in kg
     ratePerKm: driverTrip?.ratePerKm || 12,  // ₹12 / km
     ratePerKg: driverTrip?.ratePerKg || 5     // ₹5 / kg
   });
@@ -44,6 +45,7 @@ export const DriverDashboardPage = () => {
       vehicleType: 'Truck • Eicher 19ft',
       totalCapacity: 18,
       availableCapacity: 12,
+      maxWeightKg: 500,
       ratePerKm: 12,
       ratePerKg: 5
     });
@@ -63,6 +65,7 @@ export const DriverDashboardPage = () => {
       vehicleType: driverTrip.vehicleType || '',
       totalCapacity: driverTrip.totalCapacity || 18,
       availableCapacity: driverTrip.availableCapacity || 10,
+      maxWeightKg: driverTrip.maxWeightKg || 500,
       ratePerKm: driverTrip.ratePerKm || 12,
       ratePerKg: driverTrip.ratePerKg || 5
     });
@@ -75,6 +78,7 @@ export const DriverDashboardPage = () => {
     const availCap = parseInt(tripForm.availableCapacity) || 10;
     const occCap = Math.max(0, totalCap - availCap);
     const distKm = parseInt(tripForm.distanceKm) || 120;
+    const maxW = parseInt(tripForm.maxWeightKg) || 500;
     const rKm = parseInt(tripForm.ratePerKm) || 12;
     const rKg = parseInt(tripForm.ratePerKg) || 5;
 
@@ -92,6 +96,7 @@ export const DriverDashboardPage = () => {
       totalCapacity: totalCap,
       availableCapacity: availCap,
       occupiedCapacity: occCap,
+      maxWeightKg: maxW,
       ratePerKm: rKm,
       ratePerKg: rKg,
       isAvailable: true,
@@ -114,7 +119,7 @@ export const DriverDashboardPage = () => {
       <DriverSidebar />
 
       <div className="flex-1 flex flex-col min-w-0 overflow-y-auto">
-        {/* Top Header - Matches Front Page Header Bar Style */}
+        {/* Top Header */}
         <header className="bg-white border-b border-slate-200 px-8 py-4 sticky top-0 z-20 flex items-center justify-between shadow-xs">
           <div>
             <h1 className="text-xl font-extrabold text-slate-900">Carrier Dashboard</h1>
@@ -143,10 +148,10 @@ export const DriverDashboardPage = () => {
         {/* Dashboard Main Content */}
         <main className="p-8 max-w-7xl mx-auto w-full space-y-8">
           
-          {/* TOP SUMMARY CARDS (STYLING RELEVANT TO FRONT PAGE: TOP BORDER HIGHLIGHTS & WHITE SHADOW CARDS) */}
+          {/* TOP SUMMARY CARDS */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             
-            {/* Metric Card 1: Current Trip Route (Blue Accent) */}
+            {/* Metric Card 1: Current Trip Route */}
             <div className="bg-white p-6 rounded-2xl border border-slate-200 border-t-4 border-t-[#2874f0] shadow-xs space-y-2">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-semibold text-slate-500">Current Trip Route</span>
@@ -167,7 +172,7 @@ export const DriverDashboardPage = () => {
               </div>
             </div>
 
-            {/* Metric Card 2: Cargo Capacity (Amber Accent) */}
+            {/* Metric Card 2: Cargo Capacity */}
             <div className="bg-white p-6 rounded-2xl border border-slate-200 border-t-4 border-t-[#ff9f00] shadow-xs space-y-2">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-semibold text-slate-500">Available Cargo Space</span>
@@ -178,10 +183,10 @@ export const DriverDashboardPage = () => {
               <div className="text-2xl font-extrabold text-slate-900">
                 {isTripCreated ? `${driverTrip.availableCapacity} m³` : '0 m³'} <span className="text-xs font-normal text-slate-400">/ {isTripCreated ? `${driverTrip.totalCapacity} m³` : '0 m³'}</span>
               </div>
-              <p className="text-[11px] text-slate-500">{isTripCreated ? driverTrip.loadingStatus : 'Create trip to set capacity'}</p>
+              <p className="text-[11px] text-slate-500">{isTripCreated ? `${driverTrip.loadingStatus} • Max ${driverTrip.maxWeightKg || 500} kg` : 'Create trip to set capacity'}</p>
             </div>
 
-            {/* Metric Card 3: Pending Requests (Blue Hover) */}
+            {/* Metric Card 3: Pending Requests */}
             <div 
               onClick={() => setCurrentView('shipment-requests')}
               className="bg-white p-6 rounded-2xl border border-slate-200 border-t-4 border-t-[#2874f0] shadow-xs space-y-2 cursor-pointer hover:shadow-md transition-all group"
@@ -213,7 +218,7 @@ export const DriverDashboardPage = () => {
             </div>
           </div>
 
-          {/* MAIN TRIP MANAGEMENT SECTION - MATCHES FRONT PAGE CARD STYLING */}
+          {/* MAIN TRIP MANAGEMENT SECTION */}
           <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-xs space-y-6">
             
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100">
@@ -227,7 +232,7 @@ export const DriverDashboardPage = () => {
                   )}
                 </div>
                 <p className="text-xs text-slate-500 mt-1">
-                  Configure distance (km) and weight (kg) formula parameters for automatic parcel price calculation.
+                  Configure distance (km), weight limit (kg), and pricing formula parameters for automatic parcel calculation.
                 </p>
               </div>
 
@@ -250,7 +255,7 @@ export const DriverDashboardPage = () => {
               </div>
             </div>
 
-            {/* Trip Details Card with Distance & Weight Formula Breakdown */}
+            {/* Trip Details Card */}
             {isTripCreated ? (
               <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center bg-slate-50 p-6 rounded-xl border border-slate-200">
                 
@@ -293,7 +298,7 @@ export const DriverDashboardPage = () => {
                       <div className="p-2.5 rounded-lg bg-slate-50 border border-slate-100">
                         <span className="text-slate-500 text-[10px] block font-semibold">Weight Rate</span>
                         <span className="font-extrabold text-slate-900">₹{driverTrip.ratePerKg || 5} / kg</span>
-                        <span className="text-[10px] text-slate-400 block mt-0.5">(per parcel kg)</span>
+                        <span className="text-[10px] text-slate-400 block mt-0.5">(Max parcel {driverTrip.maxWeightKg || 500} kg)</span>
                       </div>
                     </div>
 
@@ -309,7 +314,7 @@ export const DriverDashboardPage = () => {
                 {/* Right Side Capacity & Trip Status Visualizer */}
                 <div className="md:col-span-5 bg-white p-5 rounded-xl border border-slate-200 space-y-4">
                   <div className="flex items-center justify-between text-xs">
-                    <span className="font-bold text-slate-800">Vehicle & Capacity Info</span>
+                    <span className="font-bold text-slate-800">Vehicle & Parcel Limits</span>
                     <span className="px-2.5 py-0.5 rounded-md bg-amber-100 text-amber-800 font-bold text-[10px]">
                       {driverTrip.loadingStatus}
                     </span>
@@ -317,8 +322,9 @@ export const DriverDashboardPage = () => {
 
                   <div className="text-xs space-y-1">
                     <div className="font-extrabold text-slate-900">{driverTrip.vehicleType}</div>
-                    <div className="text-slate-500">
-                      Total Capacity: <strong>{driverTrip.totalCapacity} m³</strong>
+                    <div className="text-slate-500 flex justify-between">
+                      <span>Total Volume: <strong>{driverTrip.totalCapacity} m³</strong></span>
+                      <span>Max Parcel Weight: <strong className="text-slate-900">{driverTrip.maxWeightKg || 500} kg</strong></span>
                     </div>
                   </div>
 
@@ -340,7 +346,7 @@ export const DriverDashboardPage = () => {
                     </div>
                   </div>
 
-                  {/* Single Trip Availability Action */}
+                  {/* Trip Availability Action */}
                   <div className="pt-2">
                     <button
                       onClick={toggleAvailability}
@@ -357,7 +363,7 @@ export const DriverDashboardPage = () => {
 
               </div>
             ) : (
-              /* EMPTY FIRST-TIME CREATE TRIP PROMPT (MATCHES FRONT PAGE HERO CARD STYLING) */
+              /* EMPTY FIRST-TIME CREATE TRIP PROMPT */
               <div className="bg-gradient-to-b from-blue-50/80 to-slate-50 border-2 border-dashed border-blue-200 p-8 sm:p-10 rounded-2xl text-center space-y-4">
                 <div className="w-16 h-16 bg-[#2874f0] text-white rounded-2xl flex items-center justify-center mx-auto shadow-md">
                   <Route className="w-8 h-8" />
@@ -365,7 +371,7 @@ export const DriverDashboardPage = () => {
                 <div className="max-w-md mx-auto space-y-1">
                   <h3 className="text-xl font-extrabold text-slate-900">No Return Trip Configured</h3>
                   <p className="text-xs text-slate-600">
-                    Create your return trip to define your route, capacity, and set distance & weight rates.
+                    Create your return trip to define your route, vehicle capacity, parcel weight limit, and formula rates.
                   </p>
                 </div>
                 <button
@@ -403,7 +409,7 @@ export const DriverDashboardPage = () => {
         </main>
       </div>
 
-      {/* CREATE / EDIT TRIP MODAL WITH DISTANCE + WEIGHT FORMULA CALCULATOR */}
+      {/* CREATE / EDIT TRIP MODAL - CONTAINS PARCEL WEIGHT FIELD */}
       {showModal && (
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl max-w-xl w-full p-6 sm:p-7 shadow-2xl space-y-5 border border-slate-200 max-h-[90vh] overflow-y-auto">
@@ -417,7 +423,7 @@ export const DriverDashboardPage = () => {
                   <h3 className="text-lg font-extrabold text-slate-900">
                     {isEditing ? 'Edit Return Trip Parameters' : 'Create New Return Trip'}
                   </h3>
-                  <p className="text-[11px] text-slate-500">Configure route, departure times & distance + weight rates</p>
+                  <p className="text-[11px] text-slate-500">Configure route, departure times, parcel weight limit & formula rates</p>
                 </div>
               </div>
               <button 
@@ -550,7 +556,7 @@ export const DriverDashboardPage = () => {
                 </div>
               </div>
 
-              {/* Free Capacity & Trip Distance */}
+              {/* Free Capacity & Max Parcel Weight */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="font-bold text-slate-700 block mb-1">Available Free Space (m³)</label>
@@ -562,17 +568,38 @@ export const DriverDashboardPage = () => {
                     required
                   />
                 </div>
+
+                {/* PARCEL WEIGHT INPUT FIELD */}
                 <div>
-                  <label className="font-bold text-slate-700 block mb-1">Trip Distance (km)</label>
+                  <label className="font-bold text-slate-700 block mb-1 flex items-center gap-1">
+                    <Scale className="w-3.5 h-3.5 text-slate-400" />
+                    <span>Max Parcel Weight (kg)</span>
+                  </label>
                   <input
                     type="number"
-                    value={tripForm.distanceKm}
-                    onChange={(e) => setTripForm({ ...tripForm, distanceKm: e.target.value })}
-                    placeholder="e.g. 120"
+                    value={tripForm.maxWeightKg}
+                    onChange={(e) => setTripForm({ ...tripForm, maxWeightKg: e.target.value })}
+                    placeholder="e.g. 500"
                     className="w-full px-3 py-2 border border-slate-200 rounded-xl bg-slate-50 focus:bg-white focus:ring-2 focus:ring-[#2874f0]"
                     required
                   />
                 </div>
+              </div>
+
+              {/* Trip Distance (km) */}
+              <div>
+                <label className="font-bold text-slate-700 block mb-1 flex items-center gap-1">
+                  <Navigation className="w-3.5 h-3.5 text-slate-400" />
+                  <span>Trip Distance (km)</span>
+                </label>
+                <input
+                  type="number"
+                  value={tripForm.distanceKm}
+                  onChange={(e) => setTripForm({ ...tripForm, distanceKm: e.target.value })}
+                  placeholder="e.g. 120"
+                  className="w-full px-3 py-2 border border-slate-200 rounded-xl bg-slate-50 focus:bg-white focus:ring-2 focus:ring-[#2874f0]"
+                  required
+                />
               </div>
 
               {/* FORMULA RATE INPUTS: DISTANCE RATE & WEIGHT RATE */}

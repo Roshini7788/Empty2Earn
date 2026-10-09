@@ -11,8 +11,6 @@ export const CustomerSidebar = () => {
     { id: 'customer-dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'request-pickup', label: 'Request Pickup', icon: PackagePlus },
     { id: 'track-request', label: 'Track Request', icon: Navigation },
-    { id: 'notifications', label: 'Notifications', icon: Bell, badge: unreadCount },
-    { id: 'profile', label: 'Profile', icon: User },
   ];
 
   return (

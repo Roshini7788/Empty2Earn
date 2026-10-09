@@ -1,6 +1,7 @@
 import React from 'react';
 import { useApp } from '../context/AppContext';
 import { CustomerSidebar } from '../components/CustomerSidebar';
+import { LocationAutocomplete } from '../components/LocationAutocomplete';
 import { MapPin, Calendar, Clock, Package, Scale, ShieldCheck, CheckCircle2, ArrowRight, ArrowLeft, Star, Navigation, Sparkles } from 'lucide-react';
 
 export const PickupRequestWizard = () => {
@@ -101,36 +102,24 @@ export const PickupRequestWizard = () => {
 
               <div className="space-y-4">
                 {/* Pickup Location */}
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">Pickup Location</label>
-                  <div className="relative">
-                    <MapPin className="w-4 h-4 text-emerald-600 absolute left-3.5 top-3" />
-                    <input
-                      type="text"
-                      value={pickupFormData.pickupLocation}
-                      onChange={(e) => handleInputChange('pickupLocation', e.target.value)}
-                      placeholder="Enter pickup address or select on map"
-                      className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 text-slate-900 font-medium"
-                      required
-                    />
-                  </div>
-                </div>
+                <LocationAutocomplete
+                  label="Pickup Location"
+                  value={pickupFormData.pickupLocation}
+                  onChange={(val) => handleInputChange('pickupLocation', val)}
+                  placeholder="Enter pickup address or select on map"
+                  iconType="pin"
+                  required
+                />
 
                 {/* Delivery Destination */}
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">Delivery Destination</label>
-                  <div className="relative">
-                    <Navigation className="w-4 h-4 text-blue-600 absolute left-3.5 top-3" />
-                    <input
-                      type="text"
-                      value={pickupFormData.deliveryDestination}
-                      onChange={(e) => handleInputChange('deliveryDestination', e.target.value)}
-                      placeholder="Enter delivery address or select on map"
-                      className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 text-slate-900 font-medium"
-                      required
-                    />
-                  </div>
-                </div>
+                <LocationAutocomplete
+                  label="Delivery Destination"
+                  value={pickupFormData.deliveryDestination}
+                  onChange={(val) => handleInputChange('deliveryDestination', val)}
+                  placeholder="Enter delivery address or select on map"
+                  iconType="navigation"
+                  required
+                />
 
                 {/* Preferred Pickup Date & Time Window */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

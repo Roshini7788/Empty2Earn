@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { DriverSidebar } from '../components/DriverSidebar';
+import { LocationAutocomplete } from '../components/LocationAutocomplete';
 import { Truck, Route, PackageCheck, CircleDollarSign, CheckCircle2, AlertCircle, Edit3, Power, Plus, ShieldCheck } from 'lucide-react';
 
 export const DriverDashboardPage = () => {
@@ -247,27 +248,25 @@ export const DriverDashboardPage = () => {
           <div className="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl space-y-4">
             <h3 className="text-lg font-bold text-slate-900">Edit Return Trip Details</h3>
             <form onSubmit={handleSaveTrip} className="space-y-3 text-xs">
-              <div>
-                <label className="font-semibold text-slate-700 block mb-1">Origin City</label>
-                <input
-                  type="text"
-                  value={editForm.origin}
-                  onChange={(e) => setEditForm({ ...editForm, origin: e.target.value })}
-                  className="w-full px-3 py-2 border rounded-xl"
-                  required
-                />
-              </div>
+              <LocationAutocomplete
+                label="Origin City"
+                value={editForm.origin}
+                onChange={(val) => setEditForm(prev => ({ ...prev, origin: val }))}
+                onSelect={(item) => setEditForm(prev => ({ ...prev, origin: item.name, originState: item.state ? item.state.slice(0, 2).toUpperCase() : 'AP' }))}
+                placeholder="Enter origin city (e.g. Bhimavaram)"
+                iconType="pin"
+                required
+              />
 
-              <div>
-                <label className="font-semibold text-slate-700 block mb-1">Destination City</label>
-                <input
-                  type="text"
-                  value={editForm.destination}
-                  onChange={(e) => setEditForm({ ...editForm, destination: e.target.value })}
-                  className="w-full px-3 py-2 border rounded-xl"
-                  required
-                />
-              </div>
+              <LocationAutocomplete
+                label="Destination City"
+                value={editForm.destination}
+                onChange={(val) => setEditForm(prev => ({ ...prev, destination: val }))}
+                onSelect={(item) => setEditForm(prev => ({ ...prev, destination: item.name, destinationState: item.state ? item.state.slice(0, 2).toUpperCase() : 'AP' }))}
+                placeholder="Enter destination city (e.g. Vijayawada, Bhimadole)"
+                iconType="navigation"
+                required
+              />
 
               <div className="grid grid-cols-2 gap-3">
                 <div>

@@ -26,7 +26,6 @@ import {
 
 export const DriverTripsPage = () => {
   const { 
-    driverTrip, 
     driverTripsHistory, 
     driverTotalRevenue,
     driverTotalEmptyKm,
@@ -150,96 +149,6 @@ export const DriverTripsPage = () => {
             </div>
           </div>
 
-          {/* CURRENT ACTIVE TRIP SPOTLIGHT */}
-          <div className="bg-gradient-to-r from-emerald-950 via-slate-900 to-slate-900 text-white p-7 rounded-3xl shadow-xl border border-emerald-900/50 space-y-5">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-800">
-              <div className="flex items-center gap-2.5">
-                <span className="relative flex h-3 w-3">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
-                </span>
-                <span className="text-xs font-extrabold tracking-wider uppercase text-emerald-400">Current Active Return Leg</span>
-                <span className="text-xs text-slate-400 font-medium">• #{driverTrip.id}</span>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <span className="text-xs bg-emerald-900/80 text-emerald-200 px-3 py-1 rounded-full border border-emerald-700/60 font-semibold">
-                  {driverTrip.isAvailable ? 'Accepting Cargo' : 'Leg In Progress'}
-                </span>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
-              {/* Route */}
-              <div className="md:col-span-7 space-y-3">
-                <div className="flex items-center gap-4">
-                  <div className="space-y-1">
-                    <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-semibold">Origin</span>
-                    <span className="text-xl font-extrabold text-white flex items-center gap-1.5">
-                      <MapPin className="w-4 h-4 text-emerald-400" /> {driverTrip.origin}
-                    </span>
-                  </div>
-
-                  <div className="flex-1 flex flex-col items-center px-4">
-                    <span className="text-[10px] text-emerald-300 font-semibold">Active Corridor</span>
-                    <div className="w-full flex items-center">
-                      <div className="h-0.5 bg-emerald-500/40 flex-1"></div>
-                      <ArrowRight className="w-4 h-4 text-emerald-400 mx-1" />
-                      <div className="h-0.5 bg-emerald-500/40 flex-1"></div>
-                    </div>
-                  </div>
-
-                  <div className="space-y-1 text-right">
-                    <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-semibold">Destination</span>
-                    <span className="text-xl font-extrabold text-white flex items-center gap-1.5 justify-end">
-                      <Navigation className="w-4 h-4 text-blue-400" /> {driverTrip.destination}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="flex flex-wrap items-center gap-4 text-xs text-slate-300 pt-1">
-                  <span className="flex items-center gap-1.5">
-                    <Calendar className="w-3.5 h-3.5 text-slate-400" /> {driverTrip.departureDate} ({driverTrip.departureTime})
-                  </span>
-                  <span>•</span>
-                  <span className="flex items-center gap-1.5">
-                    <Truck className="w-3.5 h-3.5 text-slate-400" /> {driverTrip.vehicleType}
-                  </span>
-                </div>
-              </div>
-
-              {/* Capacity Bar & Action */}
-              <div className="md:col-span-5 bg-slate-800/80 backdrop-blur-sm p-4 rounded-2xl border border-slate-700/80 space-y-3">
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-slate-300 font-semibold">Capacity Available:</span>
-                  <span className="text-emerald-400 font-extrabold">{driverTrip.availableCapacity} m³ free</span>
-                </div>
-
-                <div className="w-full h-2.5 bg-slate-700 rounded-full overflow-hidden flex">
-                  <div 
-                    className="bg-blue-500 h-full transition-all duration-300" 
-                    style={{ width: `${(driverTrip.occupiedCapacity / driverTrip.totalCapacity) * 100}%` }}
-                  />
-                  <div 
-                    className="bg-emerald-500 h-full transition-all duration-300" 
-                    style={{ width: `${(driverTrip.availableCapacity / driverTrip.totalCapacity) * 100}%` }}
-                  />
-                </div>
-
-                <div className="flex justify-between text-[10px] text-slate-400">
-                  <span>Occupied: {driverTrip.occupiedCapacity} m³</span>
-                  <span>Total: {driverTrip.totalCapacity} m³</span>
-                </div>
-
-                <button
-                  onClick={() => setCurrentView('driver-dashboard')}
-                  className="w-full py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl transition-all shadow-md mt-1"
-                >
-                  Manage Active Trip on Dashboard →
-                </button>
-              </div>
-            </div>
-          </div>
 
           {/* PREVIOUS TRIPS HISTORY SECTION */}
           <div className="space-y-5">

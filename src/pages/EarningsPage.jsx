@@ -16,7 +16,6 @@ import {
   Package
 } from 'lucide-react';
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
-
 export const EarningsPage = () => {
   const { 
     driverTotalRevenue, 
@@ -45,7 +44,7 @@ export const EarningsPage = () => {
 
       <div className="flex-1 flex flex-col min-w-0 overflow-y-auto">
         {/* Header */}
-        <header className="bg-white border-b border-slate-200 px-8 py-5 sticky top-0 z-20 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <header className="bg-white border-b border-slate-200 px-8 py-4 sticky top-0 z-20 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xs">
           <div>
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold">
@@ -78,7 +77,6 @@ export const EarningsPage = () => {
           
           {/* Top 3 KPI Cards - 100% Dynamically in Sync with Dashboard & Trips */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-            
             {/* Total Revenue */}
             <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-1 hover:border-emerald-300 transition-all">
               <span className="text-xs text-slate-500 font-semibold flex items-center gap-1.5">
@@ -139,8 +137,8 @@ export const EarningsPage = () => {
                 <AreaChart data={dynamicWeeklyData}>
                   <defs>
                     <linearGradient id="colorEarnings" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#059669" stopOpacity={0.4}/>
-                      <stop offset="95%" stopColor="#059669" stopOpacity={0}/>
+                      <stop offset="5%" stopColor="#2874f0" stopOpacity={0.4}/>
+                      <stop offset="95%" stopColor="#2874f0" stopOpacity={0}/>
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
@@ -154,7 +152,7 @@ export const EarningsPage = () => {
                   <Tooltip 
                     formatter={(val) => [`₹${Number(val).toLocaleString('en-IN')}`, 'Earnings']}
                   />
-                  <Area type="monotone" dataKey="earnings" stroke="#059669" strokeWidth={3} fillOpacity={1} fill="url(#colorEarnings)" />
+                  <Area type="monotone" dataKey="earnings" stroke="#2874f0" strokeWidth={3} fillOpacity={1} fill="url(#colorEarnings)" />
                 </AreaChart>
               </ResponsiveContainer>
             </div>

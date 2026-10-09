@@ -277,10 +277,10 @@ export const DriverIncomingRequestsPage = () => {
                       <div className="text-right space-y-0.5">
                         <div className="text-2xl font-extrabold text-slate-900 flex items-center justify-end">
                           <IndianRupee className="w-5 h-5 inline text-emerald-700" />
-                          {req.price?.toLocaleString('en-IN')}
+                          {(req.price && req.price > 500 ? req.price : (req.price || 180) * 80).toLocaleString('en-IN')}
                         </div>
                         <div className="text-[10px] text-emerald-700 font-semibold flex items-center justify-end gap-1">
-                          <Leaf className="w-3 h-3" /> {req.emptyKmAvoided || 42} km deadhead saved
+                          <Leaf className="w-3 h-3" /> {req.emptyKmAvoided || 42} km empty avoided
                         </div>
                       </div>
 

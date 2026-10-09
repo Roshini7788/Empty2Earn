@@ -39,6 +39,8 @@ const TripSchema = new mongoose.Schema({
   isAvailable: { type: Boolean, default: true },
   isCreated: { type: Boolean, default: true },
   loadingStatus: { type: String, default: 'Empty' },
+  phone: { type: String, default: '+91 98480 12345' },
+  avatar: { type: String, default: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80' },
   createdAt: { type: Date, default: Date.now }
 });
 

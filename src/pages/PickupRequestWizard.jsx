@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
+import { api } from '../services/api';
 import { CustomerSidebar } from '../components/CustomerSidebar';
 import { LocationAutocomplete } from '../components/LocationAutocomplete';
-import { MapPin, Calendar, Clock, Package, Scale, ShieldCheck, CheckCircle2, ArrowRight, ArrowLeft, Star, Navigation, Sparkles, FileText, Upload, ShieldAlert, AlertCircle, XCircle, Lock, Car } from 'lucide-react';
+import { MapPin, Calendar, Clock, Package, Scale, ShieldCheck, CheckCircle2, ArrowRight, ArrowLeft, Star, Navigation, Sparkles, FileText, Upload, ShieldAlert, AlertCircle, XCircle, Lock, Car, RefreshCw } from 'lucide-react';
 
 export const PickupRequestWizard = () => {
   const { 
@@ -47,6 +48,40 @@ export const PickupRequestWizard = () => {
     const newId = await submitPickupRequest();
     setCurrentView('track-request');
   };
+
+  const [liveDrivers, setLiveDrivers] = useState(null);
+  const [isLoadingDrivers, setIsLoadingDrivers] = useState(false);
+
+  // Fetch live drivers matching route dynamically from backend
+  useEffect(() => {
+    let isCancelled = false;
+    async function fetchMatched() {
+      setIsLoadingDrivers(true);
+      try {
+        const results = await api.matchDrivers({
+          pickup: pickupFormData.pickupLocation,
+          destination: pickupFormData.deliveryDestination,
+          weight: pickupFormData.weight,
+          capacity: pickupFormData.requiredCapacity || 5
+        });
+        if (!isCancelled && Array.isArray(results) && results.length > 0) {
+          setLiveDrivers(results);
+        }
+      } catch (err) {
+        console.warn('Live driver match notice:', err.message);
+      } finally {
+        if (!isCancelled) setIsLoadingDrivers(false);
+      }
+    }
+
+    if (pickupFormStep === 2) {
+      fetchMatched();
+    }
+
+    return () => { isCancelled = true; };
+  }, [pickupFormStep, pickupFormData.pickupLocation, pickupFormData.deliveryDestination, pickupFormData.weight]);
+
+  const driversToDisplay = (liveDrivers && liveDrivers.length > 0) ? liveDrivers : availableDrivers;
 
   const isAutomobile = pickupFormData.packageType === 'Automobiles';
   const docs = pickupFormData.documents || {};
@@ -483,9 +518,14 @@ export const PickupRequestWizard = () => {
             <div className="space-y-6">
               <div className="bg-white p-6 rounded-2xl border border-slate-200 border-t-4 border-t-[#2874f0] shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                  <h2 className="text-xl font-bold text-slate-900">Available Drivers for Your Shipment</h2>
+                  <div className="flex items-center gap-2">
+                    <h2 className="text-xl font-bold text-slate-900">Available Drivers for Your Shipment</h2>
+                    {isLoadingDrivers && (
+                      <RefreshCw className="w-4 h-4 text-[#2874f0] animate-spin" />
+                    )}
+                  </div>
                   <p className="text-xs text-slate-600 mt-1">
-                    We found <span className="font-bold text-emerald-600">3 drivers</span> who match your requirements based on route, timing, capacity, and compatibility score.
+                    We found <span className="font-bold text-emerald-600">{driversToDisplay.length} drivers</span> who match your requirements based on route, timing, capacity, and compatibility score.
                   </p>
                 </div>
 
@@ -521,7 +561,7 @@ export const PickupRequestWizard = () => {
 
               {/* Driver Cards */}
               <div className="space-y-4">
-                {availableDrivers.map((driver) => (
+                {driversToDisplay.map((driver) => (
                   <div
                     key={driver.id}
                     className="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm hover:shadow-md transition-all flex flex-col md:flex-row md:items-center justify-between gap-6"

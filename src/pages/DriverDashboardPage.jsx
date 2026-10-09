@@ -98,6 +98,10 @@ export const DriverDashboardPage = () => {
     const payload = {
       ...driverTrip,
       id: driverTrip?.id || `trip-${Date.now()}`,
+      driverId: currentDriverId,
+      driverName: currentDriverName,
+      phone: currentUser?.phone || '+91 98480 12345',
+      avatar: currentUser?.avatar || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
       origin: tripForm.origin,
       destination: tripForm.destination,
       distanceKm: distKm,

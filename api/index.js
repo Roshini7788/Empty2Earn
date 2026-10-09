@@ -274,6 +274,8 @@ export default async function handler(req, res) {
       const tripData = body;
       const driverId = authUser?.id || tripData.driverId || 'd1';
       const driverName = authUser?.name || tripData.driverName || 'Ramesh Varma';
+      const phone = authUser?.phone || tripData.phone || '+91 98480 12345';
+      const avatar = authUser?.avatar || tripData.avatar || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80';
 
       const totalCap = parseInt(tripData.totalCapacity) || 18;
       const availCap = parseInt(tripData.availableCapacity) || 10;
@@ -283,6 +285,8 @@ export default async function handler(req, res) {
         id: tripData.id || `trip-${Date.now()}`,
         driverId,
         driverName,
+        phone,
+        avatar,
         origin: tripData.origin || 'Bhimavaram',
         destination: tripData.destination || 'Vijayawada',
         distanceKm: parseInt(tripData.distanceKm) || 120,
@@ -364,8 +368,34 @@ export default async function handler(req, res) {
         allTrips = memoryStore.trips;
       }
 
-      // Base driver list enhanced with live trips from database
-      const drivers = [
+      // 1. Build dynamic driver cards from all active database trips (e.g., friend's published trip)
+      const liveDriverCards = allTrips
+        .filter(t => t.isAvailable !== false && t.origin && t.destination)
+        .map((t, idx) => ({
+          id: t.driverId || `d-${idx}`,
+          name: t.driverName || 'Varma Logistics Partner',
+          verified: true,
+          rating: 4.8,
+          completedDeliveries: 120 + idx * 8,
+          vehicleType: t.vehicleType || 'Truck • Eicher 19ft (18m³)',
+          avatar: t.avatar || (idx % 2 === 0
+            ? 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80'
+            : 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80'),
+          phone: t.phone || '+91 98480 12345',
+          origin: t.origin,
+          destination: t.destination,
+          availableCapacity: t.availableCapacity || 10,
+          totalCapacity: t.totalCapacity || 18,
+          ratePerKm: t.ratePerKm || 12,
+          ratePerKg: t.ratePerKg || 5,
+          distanceKm: t.distanceKm || 120,
+          departureDate: t.departureDate || new Date().toISOString().split('T')[0],
+          departureTime: t.departureTime || '09:00 AM',
+          isAvailable: true
+        }));
+
+      // 2. Base default corridor fleet for South India route
+      const defaultFleet = [
         {
           id: 'd1',
           name: 'Ramesh Varma',
@@ -375,13 +405,16 @@ export default async function handler(req, res) {
           vehicleType: 'Truck • Eicher 18m³ capacity',
           avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
           phone: '+91 98480 12345',
-          origin: allTrips[0]?.origin || 'Bhimavaram',
-          destination: allTrips[0]?.destination || 'Vijayawada',
-          availableCapacity: allTrips[0]?.availableCapacity || 10,
-          totalCapacity: allTrips[0]?.totalCapacity || 18,
-          ratePerKm: allTrips[0]?.ratePerKm || 12,
-          ratePerKg: allTrips[0]?.ratePerKg || 5,
-          distanceKm: allTrips[0]?.distanceKm || 120
+          origin: 'Bhimavaram',
+          destination: 'Vijayawada',
+          availableCapacity: 10,
+          totalCapacity: 18,
+          ratePerKm: 12,
+          ratePerKg: 5,
+          distanceKm: 120,
+          departureDate: new Date().toISOString().split('T')[0],
+          departureTime: '08:00 AM',
+          isAvailable: true
         },
         {
           id: 'd2',
@@ -398,7 +431,10 @@ export default async function handler(req, res) {
           totalCapacity: 20,
           ratePerKm: 14,
           ratePerKg: 6,
-          distanceKm: 125
+          distanceKm: 125,
+          departureDate: new Date().toISOString().split('T')[0],
+          departureTime: '10:30 AM',
+          isAvailable: true
         },
         {
           id: 'd3',
@@ -415,21 +451,43 @@ export default async function handler(req, res) {
           totalCapacity: 10,
           ratePerKm: 10,
           ratePerKg: 4,
-          distanceKm: 118
+          distanceKm: 118,
+          departureDate: new Date().toISOString().split('T')[0],
+          departureTime: '01:00 PM',
+          isAvailable: true
         }
       ];
 
+      // Merge: Live database trips supersede defaults by driverId
+      const driverMap = new Map();
+      liveDriverCards.forEach(d => driverMap.set(d.id, d));
+      defaultFleet.forEach(d => {
+        if (!driverMap.has(d.id)) {
+          driverMap.set(d.id, d);
+        }
+      });
+
+      const drivers = Array.from(driverMap.values());
+
+      // Helper for clean city name extraction
+      const cleanCity = (str) => (str || '').split(',')[0].trim().toLowerCase();
+      const cleanPickup = cleanCity(pickup);
+      const cleanDest = cleanCity(destination);
+
       // Calculate rule-based match score and price formula
       const matched = drivers.map((driver, index) => {
-        let score = 80;
-        const driverOrigin = driver.origin.toLowerCase();
-        const driverDest = driver.destination.toLowerCase();
+        let score = 75;
+        const driverOrigin = cleanCity(driver.origin);
+        const driverDest = cleanCity(driver.destination);
 
-        if (pickup.includes(driverOrigin) || driverOrigin.includes(pickup)) score += 10;
-        if (destination.includes(driverDest) || driverDest.includes(destination)) score += 8;
-        if (driver.availableCapacity >= reqCapacity) score += 2;
+        const originMatched = cleanPickup && (cleanPickup.includes(driverOrigin) || driverOrigin.includes(cleanPickup));
+        const destMatched = cleanDest && (cleanDest.includes(driverDest) || driverDest.includes(cleanDest));
 
-        const extraDist = index === 0 ? 12 : (index === 1 ? 18 : 25);
+        if (originMatched) score += 12;
+        if (destMatched) score += 10;
+        if (driver.availableCapacity >= reqCapacity) score += 3;
+
+        const extraDist = index === 0 ? 10 : (index === 1 ? 16 : 22);
         const calculatedPrice = (driver.distanceKm * driver.ratePerKm) + Math.round(weight * driver.ratePerKg);
 
         return {
@@ -442,11 +500,13 @@ export default async function handler(req, res) {
           availableCapacity: driver.availableCapacity,
           totalCapacity: driver.totalCapacity,
           route: `${driver.origin} → ${driver.destination} (via NH16)`,
-          matchScore: Math.min(98, score),
+          matchScore: Math.min(99, score),
           extraDistanceKm: extraDist,
-          estimatedPrice: Math.max(1450, calculatedPrice),
+          estimatedPrice: Math.max(1200, calculatedPrice),
           avatar: driver.avatar,
-          phone: driver.phone
+          phone: driver.phone,
+          plannedDeparture: `${driver.departureDate} at ${driver.departureTime}`,
+          isAvailable: true
         };
       }).sort((a, b) => b.matchScore - a.matchScore);
 

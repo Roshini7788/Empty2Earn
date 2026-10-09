@@ -410,7 +410,12 @@ export const AppProvider = ({ children }) => {
         if (!isMounted) return;
 
         if (tripsData.status === 'fulfilled' && Array.isArray(tripsData.value) && tripsData.value.length) {
-          const active = tripsData.value.find(t => t.driverId === 'd1') || tripsData.value[0];
+          const userObj = currentUser || JSON.parse(sessionStorage.getItem('e2e_user') || localStorage.getItem('e2e_user') || 'null');
+          const myId = userObj?.id;
+          const myName = userObj?.name;
+          const active = tripsData.value.find(t => (myId && t.driverId === myId) || (myName && t.driverName === myName))
+            || tripsData.value.find(t => t.driverId === 'd1')
+            || tripsData.value[0];
           if (active) setDriverTrip(active);
         }
 
@@ -498,6 +503,41 @@ export const AppProvider = ({ children }) => {
       const res = await api.login(email, password, role);
       if (res?.user) {
         setCurrentUser(res.user);
+        if (role === 'driver') {
+          api.fetchTrips().then(trips => {
+            if (Array.isArray(trips) && trips.length) {
+              const myTrip = trips.find(t => t.driverId === res.user.id || t.driverName === res.user.name);
+              if (myTrip) {
+                setDriverTrip(myTrip);
+              } else {
+                setDriverTrip({
+                  id: `trip-${Date.now()}`,
+                  driverId: res.user.id,
+                  driverName: res.user.name,
+                  phone: res.user.phone || '+91 98480 12345',
+                  avatar: res.user.avatar || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
+                  origin: '',
+                  destination: '',
+                  distanceKm: 120,
+                  departureDate: new Date().toISOString().split('T')[0],
+                  departureTime: '08:00 AM',
+                  returnDate: new Date().toISOString().split('T')[0],
+                  returnTime: '06:00 PM',
+                  vehicleType: res.user.vehicleType || 'Truck • Eicher 19ft (18m³)',
+                  totalCapacity: 18,
+                  availableCapacity: 18,
+                  occupiedCapacity: 0,
+                  maxWeightKg: 500,
+                  ratePerKm: 12,
+                  ratePerKg: 5,
+                  isAvailable: true,
+                  isCreated: false,
+                  loadingStatus: 'Empty'
+                });
+              }
+            }
+          }).catch(() => {});
+        }
         setCurrentView(role === 'driver' ? 'driver-dashboard' : 'customer-dashboard');
         return res.user;
       }

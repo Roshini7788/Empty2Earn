@@ -1,22 +1,35 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { Logo } from '../components/Logo';
-import { ArrowLeft, Lock, Mail, UserCheck, ShieldAlert, Sparkles } from 'lucide-react';
+import { ArrowLeft, Lock, Mail } from 'lucide-react';
 
 export const CustomerAuthPage = () => {
-  const { setCurrentView, loginCustomerDemo } = useApp();
-  const [email, setEmail] = useState('customer@empty2earn.demo');
-  const [password, setPassword] = useState('••••••••••••');
+  const { setCurrentView, setCurrentUser } = useApp();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(true);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    loginCustomerDemo();
+
+    if (!email.trim() || !password.trim()) {
+      return;
+    }
+
+    const safeName = email.trim().split('@')[0]?.replace(/[._-]/g, ' ') || 'Customer';
+
+    setCurrentUser({
+      id: 'c1',
+      name: safeName.charAt(0).toUpperCase() + safeName.slice(1),
+      email: email.trim(),
+      role: 'customer',
+      avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80'
+    });
+    setCurrentView('customer-dashboard');
   };
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col justify-center items-center p-4 font-sans relative">
-      {/* Back to Home Link */}
       <button
         onClick={() => setCurrentView('landing')}
         className="absolute top-6 left-6 text-sm text-slate-500 hover:text-slate-900 flex items-center gap-1.5 font-medium transition-colors"
@@ -24,14 +37,12 @@ export const CustomerAuthPage = () => {
         <ArrowLeft className="w-4 h-4" /> Back to Home
       </button>
 
-      {/* Main Login Card matching Reference Screen #2 */}
       <div className="w-full max-w-md bg-white rounded-3xl border border-slate-200 shadow-xl p-8 space-y-6">
         <div className="text-center space-y-3">
           <div className="inline-block">
             <Logo size="normal" onClick={() => setCurrentView('landing')} />
           </div>
           <h2 className="text-2xl font-extrabold text-slate-900">Customer Login</h2>
-          <p className="text-xs text-slate-500">Access your dashboard and manage your shipments</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -95,28 +106,11 @@ export const CustomerAuthPage = () => {
           </a>
         </div>
 
-        {/* Divider */}
         <div className="relative flex items-center justify-center">
           <div className="border-t border-slate-200 w-full"></div>
           <span className="bg-white px-3 text-[11px] font-semibold text-slate-400 uppercase tracking-wider absolute">OR</span>
         </div>
 
-        {/* Try Demo (Customer) Button matching Reference Screen #2 */}
-        <div className="space-y-2">
-          <button
-            onClick={loginCustomerDemo}
-            className="w-full py-3 bg-blue-50 hover:bg-blue-100 border-2 border-[#2874f0] text-[#2874f0] font-bold rounded-xl shadow-sm flex items-center justify-center gap-2 transition-all hover:scale-[1.01] text-sm"
-          >
-            <UserCheck className="w-4 h-4 text-[#2874f0]" />
-            <span>Try Demo (Customer)</span>
-          </button>
-
-          <p className="text-[11px] text-center text-slate-400">
-            Use demo credentials for a quick preview as customer Priya Sharma.
-          </p>
-        </div>
-
-        {/* Driver Link Switcher */}
         <div className="pt-2 border-t border-slate-100 text-center">
           <button
             onClick={() => setCurrentView('driver-login')}

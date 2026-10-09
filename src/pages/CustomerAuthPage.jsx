@@ -44,7 +44,7 @@ export const CustomerAuthPage = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@example.com"
-                className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all text-slate-900"
+                className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#2874f0] focus:bg-white transition-all text-slate-900"
                 required
               />
             </div>
@@ -59,7 +59,7 @@ export const CustomerAuthPage = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter your password"
-                className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all text-slate-900"
+                className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#2874f0] focus:bg-white transition-all text-slate-900"
                 required
               />
             </div>
@@ -71,26 +71,26 @@ export const CustomerAuthPage = () => {
                 type="checkbox"
                 checked={rememberMe}
                 onChange={(e) => setRememberMe(e.target.checked)}
-                className="rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 w-4 h-4"
+                className="rounded border-slate-300 text-[#2874f0] focus:ring-[#2874f0] w-4 h-4"
               />
               <span>Remember me</span>
             </label>
-            <a href="#forgot" onClick={(e) => e.preventDefault()} className="text-blue-600 hover:underline font-medium">
+            <a href="#forgot" onClick={(e) => e.preventDefault()} className="text-[#2874f0] hover:underline font-medium">
               Forgot password?
             </a>
           </div>
 
           <button
             type="submit"
-            className="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-md shadow-emerald-600/20 transition-all hover:scale-[1.01] active:scale-99 text-sm"
+            className="w-full py-3 bg-[#ff9f00] hover:bg-[#e68f00] text-slate-950 font-extrabold rounded-xl shadow-md shadow-amber-500/20 transition-all hover:scale-[1.01] active:scale-99 text-sm"
           >
-            Login
+            Login as Customer
           </button>
         </form>
 
         <div className="text-center text-xs text-slate-500">
           Don't have an account?{' '}
-          <a href="#register" onClick={(e) => e.preventDefault()} className="text-emerald-600 font-bold hover:underline">
+          <a href="#register" onClick={(e) => e.preventDefault()} className="text-[#2874f0] font-bold hover:underline">
             Register
           </a>
         </div>
@@ -105,9 +105,9 @@ export const CustomerAuthPage = () => {
         <div className="space-y-2">
           <button
             onClick={loginCustomerDemo}
-            className="w-full py-3 bg-slate-50 hover:bg-emerald-50 border-2 border-emerald-500/80 text-emerald-800 font-bold rounded-xl shadow-sm flex items-center justify-center gap-2 transition-all hover:scale-[1.01] text-sm"
+            className="w-full py-3 bg-blue-50 hover:bg-blue-100 border-2 border-[#2874f0] text-[#2874f0] font-bold rounded-xl shadow-sm flex items-center justify-center gap-2 transition-all hover:scale-[1.01] text-sm"
           >
-            <UserCheck className="w-4 h-4 text-emerald-600" />
+            <UserCheck className="w-4 h-4 text-[#2874f0]" />
             <span>Try Demo (Customer)</span>
           </button>
 
@@ -120,9 +120,9 @@ export const CustomerAuthPage = () => {
         <div className="pt-2 border-t border-slate-100 text-center">
           <button
             onClick={() => setCurrentView('driver-login')}
-            className="text-xs text-blue-600 hover:text-blue-700 font-semibold hover:underline"
+            className="text-xs text-[#2874f0] hover:text-blue-700 font-semibold hover:underline"
           >
-            Are you a driver? Switch to Driver Login →
+            Are you a driver? Switch to Carrier / Driver Login →
           </button>
         </div>
       </div>

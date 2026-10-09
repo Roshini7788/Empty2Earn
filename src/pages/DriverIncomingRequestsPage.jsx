@@ -114,7 +114,7 @@ export const DriverIncomingRequestsPage = () => {
 
                       {/* Earnings & Empty KM Avoided */}
                       <div className="text-right space-y-0.5">
-                        <div className="text-2xl font-extrabold text-slate-900">${req.price}</div>
+                        <div className="text-2xl font-extrabold text-slate-900">₹{req.price * 80 || '14,400'}</div>
                         <div className="text-[10px] text-emerald-600 font-semibold flex items-center justify-end gap-1">
                           <Leaf className="w-3 h-3" /> {req.emptyKmAvoided || 42} km empty avoided
                         </div>

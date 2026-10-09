@@ -36,7 +36,8 @@ const INITIAL_SHIPMENTS = [
     requiredCapacity: 6, // m³
     specialHandling: ['Fragile'],
     description: 'Pallet of boxed electronics components',
-    status: 'In Transit', // 'Requested' | 'Accepted' | 'Heading to Pickup' | 'Picked Up' | 'In Transit' | 'Delivered' | 'Rejected'
+    status: 'In Transit', // 'Requested' | 'Matched' | 'Accepted' | 'Heading to Pickup' | 'Picked Up' | 'In Transit' | 'Delivered'
+    deliveryOtp: '4829', // 4-digit customer verification OTP for secure handover
     driverId: 'd1',
     driverName: 'Ramesh Varma',
     driverVerified: true,
@@ -48,8 +49,12 @@ const INITIAL_SHIPMENTS = [
     extraDistanceKm: 12,
     price: 2450,
     requestedAt: 'Apr 26, 2025 • 08:30 AM',
+    matchedAt: 'Apr 26, 2025 • 09:00 AM',
     acceptedAt: 'Apr 26, 2025 • 09:15 AM',
+    headingToPickupAt: 'Apr 26, 2025 • 10:20 AM',
     pickedUpAt: 'Apr 26, 2025 • 10:45 AM',
+    inTransitAt: 'Apr 26, 2025 • 01:30 PM',
+    deliveredAt: 'Apr 26, 2025 • 04:15 PM',
     estimatedArrival: '2:15 PM (in ~10 min)',
     co2SavedKg: 18.5,
     fuelSavedLiters: 7.2,
@@ -590,9 +595,20 @@ export const AppProvider = ({ children }) => {
   };
 
   const updateDeliveryStatus = (shipmentId, newStatus) => {
+    const nowStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     setShipments(prev => prev.map(s => {
       if (s.id === shipmentId) {
-        return { ...s, status: newStatus };
+        return { 
+          ...s, 
+          status: newStatus,
+          ...(newStatus === 'Requested' && !s.requestedAt ? { requestedAt: nowStr } : {}),
+          ...(newStatus === 'Matched' ? { matchedAt: nowStr } : {}),
+          ...(newStatus === 'Accepted' ? { acceptedAt: nowStr } : {}),
+          ...(newStatus === 'Heading to Pickup' ? { headingToPickupAt: nowStr } : {}),
+          ...(newStatus === 'Picked Up' ? { pickedUpAt: nowStr } : {}),
+          ...(newStatus === 'In Transit' ? { inTransitAt: nowStr } : {}),
+          ...(newStatus === 'Delivered' ? { deliveredAt: nowStr } : {})
+        };
       }
       return s;
     }));
@@ -608,9 +624,20 @@ export const AppProvider = ({ children }) => {
     setNotifications(prev => [newNotif, ...prev]);
   };
 
+  const verifyDeliveryOtp = (shipmentId, enteredOtp) => {
+    const targetShipment = shipments.find(s => s.id === shipmentId);
+    const expectedOtp = (targetShipment?.deliveryOtp || '4829').trim();
+    if (enteredOtp && enteredOtp.trim() === expectedOtp) {
+      updateDeliveryStatus(shipmentId, 'Delivered');
+      return { success: true };
+    }
+    return { success: false, expectedOtp };
+  };
+
   // Submit pickup form to create shipment
   const submitPickupRequest = () => {
     const newId = `REQ-${1000 + shipments.length + 1}`;
+    const generatedOtp = Math.floor(1000 + Math.random() * 9000).toString();
     const newShipment = {
       id: newId,
       customerId: currentUser?.id || 'c1',
@@ -630,6 +657,7 @@ export const AppProvider = ({ children }) => {
       specialHandling: pickupFormData.specialHandling,
       description: pickupFormData.description,
       status: 'Requested', // Pending Driver Confirmation
+      deliveryOtp: generatedOtp,
       driverId: pickupFormData.selectedDriver?.id || 'd1',
       driverName: pickupFormData.selectedDriver?.name || 'Ramesh Varma',
       driverVerified: true,
@@ -830,6 +858,7 @@ export const AppProvider = ({ children }) => {
       acceptShipmentRequest,
       rejectShipmentRequest,
       updateDeliveryStatus,
+      verifyDeliveryOtp,
       submitPickupRequest,
       uploadDocument,
       updateDocumentVerificationStatus,

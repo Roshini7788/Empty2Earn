@@ -49,46 +49,52 @@ const resolveCoordinates = (addressStr, defaultCoord = { lat: 16.5449, lng: 81.5
 // True Dynamic Milestone Mapping based on driver's actual status updates
 const STAGE_MILESTONES = {
   'Requested': {
-    percent: 15,
+    percent: 14,
     stageTitle: 'Pickup Requested',
     badgeClass: 'bg-slate-100 text-slate-800 border-slate-300',
-    stepNumber: 'Step 1 of 5'
+    stepNumber: 'Step 1 of 7'
   },
   'Pending Driver Confirmation': {
-    percent: 20,
+    percent: 14,
     stageTitle: 'Pending Confirmation',
     badgeClass: 'bg-amber-100 text-amber-800 border-amber-300',
-    stepNumber: 'Step 1 of 5'
+    stepNumber: 'Step 1 of 7'
+  },
+  'Matched': {
+    percent: 28,
+    stageTitle: 'Corridor Matched',
+    badgeClass: 'bg-teal-100 text-teal-800 border-teal-300',
+    stepNumber: 'Step 2 of 7'
   },
   'Accepted': {
-    percent: 35,
-    stageTitle: 'Accepted by Driver',
+    percent: 42,
+    stageTitle: 'Accepted by Carrier',
     badgeClass: 'bg-indigo-100 text-indigo-800 border-indigo-300',
-    stepNumber: 'Step 2 of 5'
+    stepNumber: 'Step 3 of 7'
   },
   'Heading to Pickup': {
-    percent: 55,
+    percent: 57,
     stageTitle: 'Heading to Pickup Hub',
     badgeClass: 'bg-amber-100 text-amber-900 border-amber-300',
-    stepNumber: 'Step 3 of 5'
+    stepNumber: 'Step 4 of 7'
   },
   'Picked Up': {
-    percent: 75,
+    percent: 71,
     stageTitle: 'Cargo Picked Up & Loaded',
     badgeClass: 'bg-emerald-100 text-emerald-900 border-emerald-300',
-    stepNumber: 'Step 4 of 5'
+    stepNumber: 'Step 5 of 7'
   },
   'In Transit': {
-    percent: 88,
+    percent: 85,
     stageTitle: 'In Transit along Corridor',
     badgeClass: 'bg-blue-100 text-blue-900 border-blue-300',
-    stepNumber: 'Step 4 of 5'
+    stepNumber: 'Step 6 of 7'
   },
   'Delivered': {
     percent: 100,
     stageTitle: 'Delivered to Destination',
     badgeClass: 'bg-emerald-900 text-white border-emerald-950',
-    stepNumber: 'Completed'
+    stepNumber: 'Step 7 of 7'
   }
 };
 

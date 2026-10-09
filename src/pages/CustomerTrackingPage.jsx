@@ -2,7 +2,7 @@ import React from 'react';
 import { useApp } from '../context/AppContext';
 import { CustomerSidebar } from '../components/CustomerSidebar';
 import { GoogleMapsTrackingView } from '../components/GoogleMapsTrackingView';
-import { Truck, MapPin, Navigation, Clock, ShieldCheck, Star, ChevronRight, AlertCircle, RefreshCw } from 'lucide-react';
+import { Truck, MapPin, Navigation, Clock, ShieldCheck, Star, ChevronRight, AlertCircle, RefreshCw, Key } from 'lucide-react';
 
 export const CustomerTrackingPage = () => {
   const { shipments, activeShipmentId, setActiveShipmentId, setCurrentView } = useApp();
@@ -17,11 +17,15 @@ export const CustomerTrackingPage = () => {
         return <span className="px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-700 border border-emerald-200">Delivered</span>;
       case 'Picked Up':
         return <span className="px-3 py-1 rounded-full text-xs font-bold bg-indigo-100 text-indigo-700 border border-indigo-200">Picked Up</span>;
+      case 'Heading to Pickup':
+        return <span className="px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-900 border border-amber-300">Heading to Pickup</span>;
       case 'Accepted':
-        return <span className="px-3 py-1 rounded-full text-xs font-bold bg-teal-100 text-teal-700 border border-teal-200">Accepted</span>;
+        return <span className="px-3 py-1 rounded-full text-xs font-bold bg-indigo-100 text-indigo-800 border border-indigo-200">Accepted</span>;
+      case 'Matched':
+        return <span className="px-3 py-1 rounded-full text-xs font-bold bg-teal-100 text-teal-800 border border-teal-300">Corridor Matched</span>;
       case 'Requested':
       case 'Pending Driver Confirmation':
-        return <span className="px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-700 border border-amber-200">Pending Driver Confirmation</span>;
+        return <span className="px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-800 border border-slate-300">Pickup Requested</span>;
       default:
         return <span className="px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-700">{status}</span>;
     }
@@ -127,6 +131,35 @@ export const CustomerTrackingPage = () => {
                   <span className="text-blue-900 font-extrabold block uppercase text-[10px] tracking-wider">Delivery Destination</span>
                   <span className="font-extrabold text-slate-950 text-sm">{activeShipment?.deliveryDestination}</span>
                 </div>
+              </div>
+            </div>
+
+            {/* Delivery OTP Handover Card */}
+            <div className="bg-gradient-to-r from-emerald-50 via-teal-50/70 to-slate-50 border-2 border-emerald-500/30 p-5 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-xs">
+              <div className="flex items-center gap-3.5">
+                <div className="w-11 h-11 rounded-2xl bg-emerald-600 text-white flex items-center justify-center font-bold shadow-md shadow-emerald-600/20">
+                  <Key className="w-5 h-5" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h4 className="text-sm font-extrabold text-slate-900">Secure Delivery Handover OTP</h4>
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">
+                      {activeShipment?.status === 'Delivered' ? 'Verified & Completed' : 'Required for Delivery Handover'}
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-600 mt-0.5">
+                    {activeShipment?.status === 'Delivered' 
+                      ? 'Handover completed and verified by driver.' 
+                      : `Share this 4-digit code with your driver (${activeShipment?.driverName || 'Ramesh Varma'}) only when you physically receive the parcel.`}
+                  </p>
+                </div>
+              </div>
+
+              <div className="bg-white border-2 border-emerald-500/80 px-5 py-2.5 rounded-2xl text-center shadow-xs self-stretch sm:self-auto flex sm:flex-col items-center justify-between sm:justify-center">
+                <span className="text-[10px] text-slate-400 font-extrabold uppercase tracking-wider block">Your Delivery OTP</span>
+                <span className="text-2xl font-extrabold tracking-widest text-emerald-700 font-mono">
+                  {activeShipment?.deliveryOtp || '4829'}
+                </span>
               </div>
             </div>
 

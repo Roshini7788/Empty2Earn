@@ -2,7 +2,7 @@ import React from 'react';
 import { useApp } from '../context/AppContext';
 import { CustomerSidebar } from '../components/CustomerSidebar';
 import { LocationAutocomplete } from '../components/LocationAutocomplete';
-import { MapPin, Calendar, Clock, Package, Scale, ShieldCheck, CheckCircle2, ArrowRight, ArrowLeft, Star, Navigation, Sparkles } from 'lucide-react';
+import { MapPin, Calendar, Clock, Package, Scale, ShieldCheck, CheckCircle2, ArrowRight, ArrowLeft, Star, Navigation, Sparkles, FileText, Upload, ShieldAlert, AlertCircle, XCircle, Lock, Car } from 'lucide-react';
 
 export const PickupRequestWizard = () => {
   const { 
@@ -12,6 +12,8 @@ export const PickupRequestWizard = () => {
     setPickupFormData, 
     availableDrivers, 
     submitPickupRequest, 
+    uploadDocument,
+    updateDocumentVerificationStatus,
     setCurrentView 
   } = useApp();
 
@@ -29,6 +31,13 @@ export const PickupRequestWizard = () => {
     });
   };
 
+  const handleFileUpload = (docKey, e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      uploadDocument(docKey, file);
+    }
+  };
+
   const handleSelectDriver = (driver) => {
     setPickupFormData(prev => ({ ...prev, selectedDriver: driver }));
     setPickupFormStep(3);
@@ -38,6 +47,14 @@ export const PickupRequestWizard = () => {
     const newId = submitPickupRequest();
     setCurrentView('track-request');
   };
+
+  const isAutomobile = pickupFormData.packageType === 'Automobiles';
+  const docs = pickupFormData.documents || {};
+  const docStatus = pickupFormData.documentStatus || 'DOCUMENTS_REQUIRED';
+  const allDocsUploaded = Boolean(docs.identityDoc && docs.vehicleRC && docs.ownershipProof);
+
+  // For Automobiles, blocking driver search until status is APPROVED
+  const isDriverSearchDisabled = isAutomobile && docStatus !== 'APPROVED';
 
   return (
     <div className="flex min-h-screen bg-slate-50 font-sans">
@@ -95,7 +112,7 @@ export const PickupRequestWizard = () => {
             </div>
           </div>
 
-          {/* STEP 1: PICKUP & PACKAGE DETAILS FORM matching Reference Screen #5 */}
+          {/* STEP 1: PICKUP & PACKAGE DETAILS FORM */}
           {pickupFormStep === 1 && (
             <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6">
               <h2 className="text-xl font-bold text-slate-900 pb-2 border-b border-slate-100">Request Your Pickup</h2>
@@ -165,9 +182,10 @@ export const PickupRequestWizard = () => {
                       <select
                         value={pickupFormData.packageType}
                         onChange={(e) => handleInputChange('packageType', e.target.value)}
-                        className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 text-slate-900"
+                        className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 text-slate-900 font-semibold"
                       >
                         <option>Electronics</option>
+                        <option value="Automobiles">Automobiles & Vehicles</option>
                         <option>Apparel & Textiles</option>
                         <option>Auto Spare Parts</option>
                         <option>Machinery & Hardware</option>
@@ -216,6 +234,187 @@ export const PickupRequestWizard = () => {
                   </div>
                 </div>
 
+                {/* HIGH-VALUE SHIPMENT DOCUMENT VERIFICATION (Displayed dynamically ONLY for Automobiles) */}
+                {isAutomobile && (
+                  <div className="pt-4 space-y-4 border-t border-slate-200 animate-in fade-in slide-in-from-top-2">
+                    
+                    {/* Security Notice Banner */}
+                    <div className="bg-amber-50 border border-amber-200 p-4 rounded-2xl flex items-start gap-3">
+                      <ShieldAlert className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+                      <div className="text-xs text-amber-900">
+                        <div className="font-extrabold flex items-center gap-2">
+                          <Car className="w-4 h-4 text-amber-700" />
+                          <span>High-Value Automobile Verification Required</span>
+                        </div>
+                        <p className="mt-1 text-amber-800 leading-relaxed">
+                          For safety, legal compliance, and anti-theft verification, all vehicle shipments require document review. Please upload valid copies of the 3 required documents below.
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Status Badge Indicator */}
+                    <div className="flex items-center justify-between bg-slate-50 p-4 rounded-2xl border border-slate-200 text-xs">
+                      <span className="font-bold text-slate-700">Verification Status:</span>
+                      {docStatus === 'APPROVED' && (
+                        <span className="px-3 py-1 bg-emerald-100 text-emerald-800 rounded-full font-bold flex items-center gap-1.5 border border-emerald-300">
+                          <CheckCircle2 className="w-4 h-4 text-emerald-600" /> APPROVED (Vehicle Verified)
+                        </span>
+                      )}
+                      {docStatus === 'PENDING_REVIEW' && (
+                        <span className="px-3 py-1 bg-amber-100 text-amber-800 rounded-full font-bold flex items-center gap-1.5 border border-amber-300">
+                          <Clock className="w-4 h-4 text-amber-600" /> PENDING_REVIEW (Under Manual Inspection)
+                        </span>
+                      )}
+                      {docStatus === 'REJECTED' && (
+                        <span className="px-3 py-1 bg-rose-100 text-rose-800 rounded-full font-bold flex items-center gap-1.5 border border-rose-300">
+                          <XCircle className="w-4 h-4 text-rose-600" /> REJECTED (Documents Invalid)
+                        </span>
+                      )}
+                      {docStatus === 'DOCUMENTS_REQUIRED' && (
+                        <span className="px-3 py-1 bg-slate-200 text-slate-700 rounded-full font-bold flex items-center gap-1.5">
+                          <AlertCircle className="w-4 h-4 text-slate-500" /> DOCUMENTS_REQUIRED (Upload 3 Files)
+                        </span>
+                      )}
+                    </div>
+
+                    {/* 3 Upload Fields */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-1">
+                      
+                      {/* 1. Identity Document */}
+                      <div className={`p-4 rounded-2xl border transition-all ${
+                        docs.identityDoc ? 'bg-emerald-50/50 border-emerald-300' : 'bg-white border-slate-200'
+                      }`}>
+                        <div className="flex items-center gap-2 mb-2">
+                          <FileText className={`w-4 h-4 ${docs.identityDoc ? 'text-emerald-600' : 'text-slate-400'}`} />
+                          <label className="text-xs font-bold text-slate-800">1. Govt Identity Card</label>
+                        </div>
+                        <p className="text-[10px] text-slate-500 mb-3">Aadhaar / Passport / DL (PDF, JPG, PNG)</p>
+
+                        {docs.identityDoc ? (
+                          <div className="bg-white p-2.5 rounded-xl border border-emerald-200 text-xs flex items-center justify-between">
+                            <div className="truncate pr-2">
+                              <div className="font-bold text-emerald-900 truncate">{docs.identityDoc.name}</div>
+                              <span className="text-[10px] text-slate-400">{docs.identityDoc.size}</span>
+                            </div>
+                            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                          </div>
+                        ) : (
+                          <label className="flex items-center justify-center gap-2 p-3 rounded-xl border-2 border-dashed border-slate-300 hover:border-emerald-500 bg-slate-50 text-xs font-semibold text-slate-600 cursor-pointer transition-all hover:bg-emerald-50/50">
+                            <Upload className="w-4 h-4 text-slate-400" />
+                            <span>Upload Govt ID</span>
+                            <input
+                              type="file"
+                              accept=".pdf,.png,.jpg,.jpeg"
+                              onChange={(e) => handleFileUpload('identityDoc', e)}
+                              className="hidden"
+                            />
+                          </label>
+                        )}
+                      </div>
+
+                      {/* 2. Vehicle Registration Certificate (RC) */}
+                      <div className={`p-4 rounded-2xl border transition-all ${
+                        docs.vehicleRC ? 'bg-emerald-50/50 border-emerald-300' : 'bg-white border-slate-200'
+                      }`}>
+                        <div className="flex items-center gap-2 mb-2">
+                          <Car className={`w-4 h-4 ${docs.vehicleRC ? 'text-emerald-600' : 'text-slate-400'}`} />
+                          <label className="text-xs font-bold text-slate-800">2. Vehicle Registration (RC)</label>
+                        </div>
+                        <p className="text-[10px] text-slate-500 mb-3">Official Vehicle RC Copy (PDF, JPG, PNG)</p>
+
+                        {docs.vehicleRC ? (
+                          <div className="bg-white p-2.5 rounded-xl border border-emerald-200 text-xs flex items-center justify-between">
+                            <div className="truncate pr-2">
+                              <div className="font-bold text-emerald-900 truncate">{docs.vehicleRC.name}</div>
+                              <span className="text-[10px] text-slate-400">{docs.vehicleRC.size}</span>
+                            </div>
+                            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                          </div>
+                        ) : (
+                          <label className="flex items-center justify-center gap-2 p-3 rounded-xl border-2 border-dashed border-slate-300 hover:border-emerald-500 bg-slate-50 text-xs font-semibold text-slate-600 cursor-pointer transition-all hover:bg-emerald-50/50">
+                            <Upload className="w-4 h-4 text-slate-400" />
+                            <span>Upload Vehicle RC</span>
+                            <input
+                              type="file"
+                              accept=".pdf,.png,.jpg,.jpeg"
+                              onChange={(e) => handleFileUpload('vehicleRC', e)}
+                              className="hidden"
+                            />
+                          </label>
+                        )}
+                      </div>
+
+                      {/* 3. Ownership / Authorization Proof */}
+                      <div className={`p-4 rounded-2xl border transition-all ${
+                        docs.ownershipProof ? 'bg-emerald-50/50 border-emerald-300' : 'bg-white border-slate-200'
+                      }`}>
+                        <div className="flex items-center gap-2 mb-2">
+                          <ShieldCheck className={`w-4 h-4 ${docs.ownershipProof ? 'text-emerald-600' : 'text-slate-400'}`} />
+                          <label className="text-xs font-bold text-slate-800">3. Ownership / Authorization</label>
+                        </div>
+                        <p className="text-[10px] text-slate-500 mb-3">Invoice or Transport Letter (PDF, JPG, PNG)</p>
+
+                        {docs.ownershipProof ? (
+                          <div className="bg-white p-2.5 rounded-xl border border-emerald-200 text-xs flex items-center justify-between">
+                            <div className="truncate pr-2">
+                              <div className="font-bold text-emerald-900 truncate">{docs.ownershipProof.name}</div>
+                              <span className="text-[10px] text-slate-400">{docs.ownershipProof.size}</span>
+                            </div>
+                            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                          </div>
+                        ) : (
+                          <label className="flex items-center justify-center gap-2 p-3 rounded-xl border-2 border-dashed border-slate-300 hover:border-emerald-500 bg-slate-50 text-xs font-semibold text-slate-600 cursor-pointer transition-all hover:bg-emerald-50/50">
+                            <Upload className="w-4 h-4 text-slate-400" />
+                            <span>Upload Ownership Proof</span>
+                            <input
+                              type="file"
+                              accept=".pdf,.png,.jpg,.jpeg"
+                              onChange={(e) => handleFileUpload('ownershipProof', e)}
+                              className="hidden"
+                            />
+                          </label>
+                        )}
+                      </div>
+
+                    </div>
+
+                    {/* Manual Review Mechanism (MVP Demo Reviewer Action) */}
+                    {allDocsUploaded && (
+                      <div className="bg-blue-50/80 border border-blue-200 p-4 rounded-2xl space-y-2 text-xs">
+                        <div className="flex items-center justify-between">
+                          <span className="font-bold text-blue-900 flex items-center gap-1.5">
+                            <Lock className="w-4 h-4 text-blue-600" />
+                            Admin Document Inspection Panel (Manual Review Demo)
+                          </span>
+                          <span className="text-[10px] bg-blue-100 text-blue-800 font-bold px-2 py-0.5 rounded-full">
+                            Manual Verification Mode
+                          </span>
+                        </div>
+                        <p className="text-blue-800 text-[11px]">
+                          Documents are saved securely. For this prototype, simulate the manual admin review step below:
+                        </p>
+                        <div className="flex items-center gap-2 pt-1">
+                          <button
+                            type="button"
+                            onClick={() => updateDocumentVerificationStatus('APPROVED')}
+                            className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-sm transition-all"
+                          >
+                            ✓ Approve Documents (Unlock Drivers)
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => updateDocumentVerificationStatus('REJECTED')}
+                            className="px-4 py-2 border border-rose-300 text-rose-700 bg-white hover:bg-rose-50 font-semibold rounded-xl transition-all"
+                          >
+                            Reject Documents
+                          </button>
+                        </div>
+                      </div>
+                    )}
+
+                  </div>
+                )}
+
                 {/* Special Handling Requirements */}
                 <div className="pt-2">
                   <label className="block text-xs font-semibold text-slate-700 mb-2">Special Handling Requirements (optional)</label>
@@ -254,11 +453,23 @@ export const PickupRequestWizard = () => {
                 </div>
               </div>
 
-              {/* Submit Button Step 1 matching Reference Screen #5 */}
-              <div className="pt-4">
+              {/* Submit Button Step 1 */}
+              <div className="pt-4 space-y-2">
+                {isDriverSearchDisabled && (
+                  <p className="text-xs text-rose-600 font-semibold text-center flex items-center justify-center gap-1">
+                    <AlertCircle className="w-4 h-4" />
+                    Automobile shipments require approved vehicle & identity documents before finding drivers.
+                  </p>
+                )}
+
                 <button
                   onClick={() => setPickupFormStep(2)}
-                  className="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-2xl shadow-lg shadow-emerald-600/20 flex items-center justify-center gap-2 transition-all text-base hover:scale-[1.01]"
+                  disabled={isDriverSearchDisabled}
+                  className={`w-full py-3.5 font-bold rounded-2xl flex items-center justify-center gap-2 transition-all text-base ${
+                    isDriverSearchDisabled
+                      ? 'bg-slate-200 text-slate-400 cursor-not-allowed border border-slate-300'
+                      : 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-lg shadow-emerald-600/20 hover:scale-[1.01]'
+                  }`}
                 >
                   <span>Find Available Drivers</span>
                   <ArrowRight className="w-5 h-5" />
@@ -267,7 +478,7 @@ export const PickupRequestWizard = () => {
             </div>
           )}
 
-          {/* STEP 2: AVAILABLE DRIVERS LIST matching Reference Screen #6 */}
+          {/* STEP 2: AVAILABLE DRIVERS LIST */}
           {pickupFormStep === 2 && (
             <div className="space-y-6">
               <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -300,9 +511,15 @@ export const PickupRequestWizard = () => {
                   <Navigation className="w-3.5 h-3.5 text-blue-600" />
                   <span>To: {pickupFormData.deliveryDestination}</span>
                 </div>
+                {isAutomobile && (
+                  <div className="bg-emerald-100 text-emerald-800 px-3 py-1.5 rounded-xl font-bold border border-emerald-300 flex items-center gap-1.5">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                    <span>Documents Approved</span>
+                  </div>
+                )}
               </div>
 
-              {/* Driver Cards matching Screen #6 */}
+              {/* Driver Cards */}
               <div className="space-y-4">
                 {availableDrivers.map((driver) => (
                   <div
@@ -350,7 +567,6 @@ export const PickupRequestWizard = () => {
 
                     {/* Right: Compatibility Score, Price & Select Button */}
                     <div className="flex md:flex-col items-center md:items-end justify-between border-t md:border-t-0 pt-4 md:pt-0 border-slate-100 gap-4 min-w-[180px]">
-                      {/* Match Score Badge matching Screen #6 */}
                       <div className="flex items-center gap-3">
                         <div className="w-12 h-12 rounded-full border-4 border-emerald-500 text-emerald-700 font-extrabold text-xs flex items-center justify-center bg-emerald-50">
                           {driver.matchScore}%

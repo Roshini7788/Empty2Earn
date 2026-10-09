@@ -166,17 +166,7 @@ export const CustomerTrackingPage = () => {
             {/* DYNAMIC REAL-TIME GOOGLE MAPS TRACKING VIEW */}
             <GoogleMapsTrackingView shipment={activeShipment} />
 
-            {/* View Delivery Completion CTA if Delivered */}
-            {activeShipment?.status === 'Delivered' && (
-              <div className="pt-2">
-                <button
-                  onClick={() => setCurrentView('completion')}
-                  className="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-2xl shadow-md flex items-center justify-center gap-2 text-sm transition-all"
-                >
-                  View Delivery Completed Screen & Impact →
-                </button>
-              </div>
-            )}
+
 
           </div>
 

@@ -221,7 +221,14 @@ export const AppProvider = ({ children }) => {
     height: '15',
     specialHandling: ['Fragile'],
     description: 'High value sample electronics kit for rapid delivery',
-    selectedDriver: null
+    selectedDriver: null,
+    // High-Value Shipment Document Verification
+    documents: {
+      identityDoc: null,      // { name, size, type, uploadedAt }
+      vehicleRC: null,        // { name, size, type, uploadedAt }
+      ownershipProof: null   // { name, size, type, uploadedAt }
+    },
+    documentStatus: 'DOCUMENTS_REQUIRED' // 'DOCUMENTS_REQUIRED' | 'PENDING_REVIEW' | 'APPROVED' | 'REJECTED'
   });
 
   // Sync state to localStorage
@@ -397,6 +404,61 @@ export const AppProvider = ({ children }) => {
     return newId;
   };
 
+  // High-Value Shipment Document Verification handlers
+  const uploadDocument = (docKey, file) => {
+    if (!file) return;
+
+    // Validate size (max 10MB)
+    if (file.size > 10 * 1024 * 1024) {
+      alert('File size exceeds 10MB limit. Please upload a smaller document.');
+      return;
+    }
+
+    const docMetadata = {
+      name: file.name,
+      size: (file.size / 1024).toFixed(1) + ' KB',
+      type: file.type,
+      uploadedAt: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    };
+
+    setPickupFormData(prev => {
+      const updatedDocs = {
+        ...prev.documents,
+        [docKey]: docMetadata
+      };
+
+      // Check if all 3 required documents are present
+      const allUploaded = updatedDocs.identityDoc && updatedDocs.vehicleRC && updatedDocs.ownershipProof;
+
+      return {
+        ...prev,
+        documents: updatedDocs,
+        documentStatus: allUploaded ? 'PENDING_REVIEW' : 'DOCUMENTS_REQUIRED'
+      };
+    });
+  };
+
+  const updateDocumentVerificationStatus = (newStatus) => {
+    setPickupFormData(prev => ({
+      ...prev,
+      documentStatus: newStatus
+    }));
+
+    if (newStatus === 'APPROVED') {
+      setNotifications(prev => [
+        {
+          id: `n-${Date.now()}`,
+          title: 'Automobile Documents Approved',
+          message: 'Your vehicle identity and RC documents have been verified. You can now select matching drivers.',
+          time: 'Just now',
+          type: 'success',
+          read: false
+        },
+        ...prev
+      ]);
+    }
+  };
+
   const resetDemoData = () => {
     localStorage.removeItem('e2e_user');
     localStorage.removeItem('e2e_view');
@@ -441,6 +503,8 @@ export const AppProvider = ({ children }) => {
       rejectShipmentRequest,
       updateDeliveryStatus,
       submitPickupRequest,
+      uploadDocument,
+      updateDocumentVerificationStatus,
       resetDemoData
     }}>
       {children}

@@ -112,7 +112,7 @@ export const CustomerAuthPage = () => {
           </button>
 
           <p className="text-[11px] text-center text-slate-400">
-            Use demo credentials for a quick preview as customer Sarah Johnson.
+            Use demo credentials for a quick preview as customer Priya Sharma.
           </p>
         </div>
 

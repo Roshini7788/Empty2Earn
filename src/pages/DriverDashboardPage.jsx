@@ -5,12 +5,21 @@ import { LocationAutocomplete } from '../components/LocationAutocomplete';
 import { Truck, Route, PackageCheck, CircleDollarSign, CheckCircle2, AlertCircle, Edit3, Power, Plus, ShieldCheck } from 'lucide-react';
 
 export const DriverDashboardPage = () => {
-  const { currentUser, driverTrip, setDriverTrip, shipments, setCurrentView } = useApp();
+  const { currentUser, driverTrip, setDriverTrip, shipments, driverTotalRevenue, setCurrentView } = useApp();
   const [showEditModal, setShowEditModal] = useState(false);
   const [editForm, setEditForm] = useState({ ...driverTrip });
 
-  const pendingRequests = shipments.filter(s => s.status === 'Requested' || s.status === 'Pending Driver Confirmation');
-  const activeDelivery = shipments.find(s => ['Accepted', 'Heading to Pickup', 'Picked Up', 'In Transit'].includes(s.status));
+  const currentDriverId = currentUser?.id || 'd1';
+  const currentDriverName = currentUser?.name || 'Ramesh Varma';
+
+  const pendingRequests = shipments.filter(s => 
+    (s.driverId === currentDriverId || s.driverName === currentDriverName) &&
+    (s.status === 'Requested' || s.status === 'Pending Driver Confirmation')
+  );
+  const activeDelivery = shipments.find(s => 
+    (s.driverId === currentDriverId || s.driverName === currentDriverName) &&
+    ['Accepted', 'Heading to Pickup', 'Picked Up', 'In Transit'].includes(s.status)
+  );
 
   const toggleAvailability = () => {
     setDriverTrip(prev => ({ ...prev, isAvailable: !prev.isAvailable }));
@@ -59,19 +68,27 @@ export const DriverDashboardPage = () => {
           {/* Summary Metric Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Card 1 */}
-            <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-2">
+            <div 
+              onClick={() => setCurrentView('my-trips')}
+              className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-2 cursor-pointer hover:border-blue-300 transition-all group"
+            >
               <div className="flex items-center justify-between">
                 <span className="text-xs font-semibold text-slate-500">Current Trip Status</span>
-                <span className="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold">
+                <span className="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold group-hover:bg-blue-600 group-hover:text-white transition-all">
                   <Route className="w-4 h-4" />
                 </span>
               </div>
-              <div className="text-xl font-extrabold text-slate-900">
+              <div className="text-xl font-extrabold text-slate-900 group-hover:text-blue-700 transition-colors">
                 {driverTrip.origin} → {driverTrip.destination}
               </div>
-              <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-700">
-                Active Return Leg
-              </span>
+              <div className="flex items-center justify-between">
+                <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-700">
+                  Active Return Leg
+                </span>
+                <span className="text-[11px] font-semibold text-blue-600 group-hover:underline">
+                  Trip History →
+                </span>
+              </div>
             </div>
 
             {/* Card 2 */}
@@ -108,15 +125,23 @@ export const DriverDashboardPage = () => {
             </div>
 
             {/* Card 4 */}
-            <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-2">
+            <div 
+              onClick={() => setCurrentView('earnings')}
+              className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-2 cursor-pointer hover:border-emerald-300 transition-all group"
+            >
               <div className="flex items-center justify-between">
                 <span className="text-xs font-semibold text-slate-500">Total Earnings</span>
-                <span className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
+                <span className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold group-hover:bg-emerald-600 group-hover:text-white transition-all">
                   <CircleDollarSign className="w-4 h-4" />
                 </span>
               </div>
-              <div className="text-2xl font-extrabold text-slate-900">$1,420</div>
-              <p className="text-[11px] text-emerald-600 font-semibold">+18% this month</p>
+              <div className="text-2xl font-extrabold text-slate-900 group-hover:text-emerald-700 transition-colors">
+                ₹{driverTotalRevenue.toLocaleString('en-IN')}
+              </div>
+              <div className="flex items-center justify-between text-[11px]">
+                <span className="text-emerald-600 font-semibold">+24% this month</span>
+                <span className="text-blue-600 font-semibold group-hover:underline">View Analytics →</span>
+              </div>
             </div>
           </div>
 
@@ -132,6 +157,12 @@ export const DriverDashboardPage = () => {
               </div>
 
               <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setCurrentView('my-trips')}
+                  className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl flex items-center gap-1.5 transition-all border border-slate-200"
+                >
+                  <Route className="w-3.5 h-3.5 text-blue-600" /> Previous Trips History
+                </button>
                 <button
                   onClick={() => setShowEditModal(true)}
                   className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-md flex items-center gap-1.5 transition-all"

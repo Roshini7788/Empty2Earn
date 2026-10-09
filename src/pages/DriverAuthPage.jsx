@@ -112,7 +112,7 @@ export const DriverAuthPage = () => {
           </button>
 
           <p className="text-[11px] text-center text-slate-400">
-            Use demo credentials for a quick preview as driver Mike Davis.
+            Use demo credentials for a quick preview as delivery partner Ramesh Varma.
           </p>
         </div>
 

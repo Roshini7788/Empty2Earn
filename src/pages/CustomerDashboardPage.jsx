@@ -38,10 +38,10 @@ export const CustomerDashboardPage = () => {
 
           <div className="flex items-center gap-3 bg-slate-50 px-3.5 py-1.5 rounded-full border border-slate-200">
             <div className="w-8 h-8 rounded-full bg-emerald-500 text-white flex items-center justify-center font-bold text-xs">
-              CS
+              PS
             </div>
             <div className="text-left text-xs">
-              <span className="font-bold text-slate-900 block">{currentUser?.name || 'Sarah Johnson'}</span>
+              <span className="font-bold text-slate-900 block">{currentUser?.name || 'Priya Sharma'}</span>
               <span className="text-[10px] text-slate-500">Customer</span>
             </div>
           </div>
@@ -53,7 +53,7 @@ export const CustomerDashboardPage = () => {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
             <div>
               <h2 className="text-2xl font-extrabold text-slate-900">
-                Good morning, {currentUser?.name?.split(' ')[0] || 'Sarah'}!
+                Good morning, {currentUser?.name?.split(' ')[0] || 'Priya'}!
               </h2>
               <p className="text-xs text-slate-600 mt-1">
                 Let's make your deliveries more efficient and eco-friendly today.

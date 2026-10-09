@@ -503,12 +503,12 @@ export const PickupRequestWizard = () => {
                   <Calendar className="w-3.5 h-3.5 text-slate-500" />
                   <span>Pickup: {pickupFormData.pickupDate}, {pickupFormData.pickupTimeWindow}</span>
                 </div>
-                <div className="bg-white px-3 py-1.5 rounded-xl font-semibold text-slate-800 border border-slate-200 flex items-center gap-1.5">
-                  <MapPin className="w-3.5 h-3.5 text-emerald-600" />
+                <div className="bg-white px-3 py-1.5 rounded-xl font-bold text-emerald-950 border border-emerald-300 shadow-sm flex items-center gap-1.5">
+                  <MapPin className="w-4 h-4 text-emerald-900" />
                   <span>From: {pickupFormData.pickupLocation}</span>
                 </div>
-                <div className="bg-white px-3 py-1.5 rounded-xl font-semibold text-slate-800 border border-slate-200 flex items-center gap-1.5">
-                  <Navigation className="w-3.5 h-3.5 text-blue-600" />
+                <div className="bg-white px-3 py-1.5 rounded-xl font-bold text-blue-950 border border-blue-300 shadow-sm flex items-center gap-1.5">
+                  <Navigation className="w-4 h-4 text-blue-900" />
                   <span>To: {pickupFormData.deliveryDestination}</span>
                 </div>
                 {isAutomobile && (
@@ -539,6 +539,16 @@ export const PickupRequestWizard = () => {
                           {driver.verified && (
                             <span className="inline-flex items-center gap-1 text-[10px] font-bold bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full">
                               <ShieldCheck className="w-3 h-3" /> Verified
+                            </span>
+                          )}
+                          {driver.isAvailable !== false ? (
+                            <span className="inline-flex items-center gap-1 text-[10px] font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full">
+                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                              Truck Deployed
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center gap-1 text-[10px] font-bold bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full">
+                              Truck Offline
                             </span>
                           )}
                         </div>
@@ -578,15 +588,24 @@ export const PickupRequestWizard = () => {
                       </div>
 
                       <div className="text-right">
-                        <div className="text-2xl font-extrabold text-slate-900">${driver.estimatedPrice} <span className="text-xs font-normal text-slate-400">(est.)</span></div>
+                        <div className="text-2xl font-extrabold text-slate-900">₹{driver.estimatedPrice?.toLocaleString('en-IN')} <span className="text-xs font-normal text-slate-400">(est.)</span></div>
                       </div>
 
-                      <button
-                        onClick={() => handleSelectDriver(driver)}
-                        className="w-full md:w-auto px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-md shadow-emerald-600/20 transition-all hover:scale-105"
-                      >
-                        Select Driver
-                      </button>
+                      {driver.isAvailable !== false ? (
+                        <button
+                          onClick={() => handleSelectDriver(driver)}
+                          className="w-full md:w-auto px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-md shadow-emerald-600/20 transition-all hover:scale-105"
+                        >
+                          Select Driver
+                        </button>
+                      ) : (
+                        <button
+                          disabled
+                          className="w-full md:w-auto px-6 py-2.5 bg-slate-200 text-slate-500 font-bold text-xs rounded-xl cursor-not-allowed"
+                        >
+                          Truck Offline
+                        </button>
+                      )}
                     </div>
                   </div>
                 ))}
@@ -614,7 +633,7 @@ export const PickupRequestWizard = () => {
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="text-xl font-extrabold text-emerald-600">${pickupFormData.selectedDriver.estimatedPrice}</div>
+                    <div className="text-xl font-extrabold text-emerald-600">₹{pickupFormData.selectedDriver.estimatedPrice?.toLocaleString('en-IN')}</div>
                     <span className="text-[10px] text-slate-400">Estimated Total</span>
                   </div>
                 </div>

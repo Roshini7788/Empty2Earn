@@ -6,8 +6,14 @@ import { LayoutDashboard, Route, PackageCheck, Truck, CircleDollarSign, User, Lo
 export const DriverSidebar = () => {
   const { currentView, setCurrentView, logout, currentUser, shipments } = useApp();
   
-  // Pending requests for driver
-  const pendingCount = shipments.filter(s => s.status === 'Requested' || s.status === 'Pending Driver Confirmation').length;
+  const currentDriverId = currentUser?.id || 'd1';
+  const currentDriverName = currentUser?.name || 'Ramesh Varma';
+
+  // Pending requests for this specific driver
+  const pendingCount = shipments.filter(s => 
+    (s.driverId === currentDriverId || s.driverName === currentDriverName) && 
+    (s.status === 'Requested' || s.status === 'Pending Driver Confirmation')
+  ).length;
 
   const navItems = [
     { id: 'driver-dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -29,10 +35,10 @@ export const DriverSidebar = () => {
         {/* User Card matching Screen #7 */}
         <div className="p-4 mx-4 my-4 bg-slate-50 rounded-2xl border border-slate-200/80 flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white font-bold flex items-center justify-center text-sm shadow-sm">
-            MD
+            RV
           </div>
           <div className="truncate">
-            <h4 className="text-xs font-bold text-slate-900 truncate">{currentUser?.name || 'Mike Davis'}</h4>
+            <h4 className="text-xs font-bold text-slate-900 truncate">{currentUser?.name || 'Ramesh Varma'}</h4>
             <span className="inline-flex items-center gap-1 text-[10px] text-blue-700 font-semibold bg-blue-100 px-2 py-0.5 rounded-full">
               <CheckCircle2 className="w-2.5 h-2.5" /> Verified Driver
             </span>

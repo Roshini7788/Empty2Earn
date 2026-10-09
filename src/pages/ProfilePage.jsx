@@ -27,8 +27,8 @@ export const ProfilePage = () => {
                 {currentUser?.name ? currentUser.name.split(' ').map(n=>n[0]).join('') : 'E2E'}
               </div>
               <div>
-                <h2 className="text-xl font-extrabold text-slate-900">{currentUser?.name || 'Sarah Johnson'}</h2>
-                <p className="text-xs text-slate-500 mt-0.5">{currentUser?.email || 'customer@empty2earn.demo'}</p>
+                <h2 className="text-xl font-extrabold text-slate-900">{currentUser?.name || 'Priya Sharma'}</h2>
+                <p className="text-xs text-slate-500 mt-0.5">{currentUser?.email || 'priya.sharma@empty2earn.in'}</p>
                 <span className="mt-2 inline-flex items-center gap-1 text-xs font-bold px-3 py-1 rounded-full bg-emerald-100 text-emerald-800">
                   <ShieldCheck className="w-3.5 h-3.5" /> Verified Demo Account
                 </span>

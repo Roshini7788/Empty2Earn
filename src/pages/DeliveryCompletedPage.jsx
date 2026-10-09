@@ -44,7 +44,7 @@ export const DeliveryCompletedPage = () => {
 
               <div>
                 <span className="text-slate-400 font-semibold uppercase text-[10px] block">Driver</span>
-                <span className="text-base font-extrabold text-slate-900">{activeShipment?.driverName || 'Mike Davis'}</span>
+                <span className="text-base font-extrabold text-slate-900">{activeShipment?.driverName || 'Ramesh Varma'}</span>
               </div>
 
               <div className="col-span-2 border-t border-slate-200/80 pt-3 flex items-center justify-between">
@@ -122,15 +122,15 @@ export const DeliveryCompletedPage = () => {
               </div>
               <div className="flex justify-between py-1 border-b border-slate-100">
                 <span className="text-slate-500">Base Transport Fee</span>
-                <span className="font-semibold text-slate-800">${(activeShipment?.price || 180) - 20}</span>
+                <span className="font-semibold text-slate-800">₹{((activeShipment?.price || 2450) - 250).toLocaleString('en-IN')}</span>
               </div>
               <div className="flex justify-between py-1 border-b border-slate-100">
                 <span className="text-slate-500">Eco-Matching Fee</span>
-                <span className="font-semibold text-slate-800">$20</span>
+                <span className="font-semibold text-slate-800">₹250</span>
               </div>
               <div className="flex justify-between py-2 font-bold text-sm text-slate-900 border-t border-slate-200">
                 <span>Total Amount</span>
-                <span className="text-emerald-600">${activeShipment?.price || 180}</span>
+                <span className="text-emerald-600">₹{(activeShipment?.price || 2450).toLocaleString('en-IN')}</span>
               </div>
             </div>
 

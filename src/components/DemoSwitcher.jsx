@@ -54,10 +54,10 @@ export const DemoSwitcher = () => {
             >
               <div className="flex items-center gap-2.5">
                 <div className="w-7 h-7 rounded-full bg-emerald-500 text-white flex items-center justify-center font-bold text-xs">
-                  CS
+                  PS
                 </div>
                 <div className="text-left">
-                  <div className="font-semibold">Sarah Johnson (Customer)</div>
+                  <div className="font-semibold">Priya Sharma (Customer)</div>
                   <div className="text-[10px] text-slate-500">Request & Track Shipments</div>
                 </div>
               </div>
@@ -77,10 +77,10 @@ export const DemoSwitcher = () => {
             >
               <div className="flex items-center gap-2.5">
                 <div className="w-7 h-7 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-xs">
-                  MD
+                  RV
                 </div>
                 <div className="text-left">
-                  <div className="font-semibold">Mike Davis (Driver)</div>
+                  <div className="font-semibold">Ramesh Varma (Delivery Partner)</div>
                   <div className="text-[10px] text-slate-500">Accept Requests & Update Status</div>
                 </div>
               </div>

@@ -7,6 +7,7 @@ import { CustomerDashboardPage } from './pages/CustomerDashboardPage';
 import { PickupRequestWizard } from './pages/PickupRequestWizard';
 import { CustomerTrackingPage } from './pages/CustomerTrackingPage';
 import { DriverDashboardPage } from './pages/DriverDashboardPage';
+import { DriverTripsPage } from './pages/DriverTripsPage';
 import { DriverIncomingRequestsPage } from './pages/DriverIncomingRequestsPage';
 import { DriverDeliveryStatusPage } from './pages/DriverDeliveryStatusPage';
 import { DeliveryCompletedPage } from './pages/DeliveryCompletedPage';
@@ -33,8 +34,9 @@ const MainContent = () => {
       case 'track-request':
         return <CustomerTrackingPage />;
       case 'driver-dashboard':
-      case 'my-trips':
         return <DriverDashboardPage />;
+      case 'my-trips':
+        return <DriverTripsPage />;
       case 'shipment-requests':
         return <DriverIncomingRequestsPage />;
       case 'delivery-status':

@@ -27,7 +27,7 @@ export const CustomerSidebar = () => {
             CS
           </div>
           <div className="truncate">
-            <h4 className="text-xs font-bold text-slate-900 truncate">{currentUser?.name || 'Sarah Johnson'}</h4>
+            <h4 className="text-xs font-bold text-slate-900 truncate">{currentUser?.name || 'Priya Sharma'}</h4>
             <span className="inline-flex items-center gap-1 text-[10px] text-emerald-700 font-semibold bg-emerald-100 px-2 py-0.5 rounded-full">
               <Leaf className="w-2.5 h-2.5" /> Customer
             </span>

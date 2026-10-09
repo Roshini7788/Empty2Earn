@@ -16,8 +16,8 @@ export const DeliveryCompletedPage = () => {
       <div className="flex-1 flex flex-col min-w-0 overflow-y-auto">
         <main className="p-8 max-w-3xl mx-auto w-full my-auto space-y-8">
           
-          {/* Main Success Card matching Reference Screen #11 */}
-          <div className="bg-white p-8 sm:p-12 rounded-3xl border border-slate-200 shadow-xl text-center space-y-8">
+          {/* Main Success Card matching Carrier Dashboard palette */}
+          <div className="bg-white p-8 sm:p-12 rounded-2xl border border-slate-200 border-t-4 border-t-emerald-500 shadow-xs text-center space-y-8">
             
             {/* Green Success Icon */}
             <div className="relative inline-block">

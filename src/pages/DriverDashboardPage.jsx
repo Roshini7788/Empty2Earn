@@ -4,7 +4,7 @@ import { DriverSidebar } from '../components/DriverSidebar';
 import { Truck, Route, PackageCheck, CircleDollarSign, CheckCircle2, Edit3, Plus, ArrowRight, MapPin, Calendar, Clock, Calculator, Scale, Navigation } from 'lucide-react';
 
 export const DriverDashboardPage = () => {
-  const { currentUser, driverTrip, setDriverTrip, shipments, driverTotalRevenue, setCurrentView } = useApp();
+  const { currentUser, driverTrip, setDriverTrip, updateDriverTrip, toggleDriverAvailability, shipments, driverTotalRevenue, setCurrentView } = useApp();
   const [showModal, setShowModal] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
 
@@ -38,7 +38,11 @@ export const DriverDashboardPage = () => {
   );
 
   const toggleAvailability = () => {
-    setDriverTrip(prev => ({ ...prev, isAvailable: !prev.isAvailable }));
+    if (toggleDriverAvailability) {
+      toggleDriverAvailability();
+    } else {
+      setDriverTrip(prev => ({ ...prev, isAvailable: !prev.isAvailable }));
+    }
   };
 
   const handleOpenCreateModal = () => {
@@ -91,7 +95,7 @@ export const DriverDashboardPage = () => {
     const rKm = parseInt(tripForm.ratePerKm) || 12;
     const rKg = parseInt(tripForm.ratePerKg) || 5;
 
-    setDriverTrip({
+    const payload = {
       ...driverTrip,
       id: driverTrip?.id || `trip-${Date.now()}`,
       origin: tripForm.origin,
@@ -111,7 +115,13 @@ export const DriverDashboardPage = () => {
       isAvailable: true,
       isCreated: true,
       loadingStatus: occCap === 0 ? 'Empty' : (availCap === 0 ? 'Full' : 'Partially Loaded')
-    });
+    };
+
+    if (updateDriverTrip) {
+      updateDriverTrip(payload);
+    } else {
+      setDriverTrip(payload);
+    }
 
     setShowModal(false);
   };

@@ -122,19 +122,19 @@ export const DriverIncomingRequestsPage = () => {
           )}
           
           {/* Active Deployed Truck Info Banner */}
-          <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className="bg-white p-6 rounded-2xl border border-slate-200 border-t-4 border-t-[#2874f0] shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div className="flex items-center gap-3.5">
-              <div className={`w-12 h-12 rounded-2xl flex items-center justify-center font-bold text-white shadow-sm ${
-                isTruckDeployed ? 'bg-emerald-600' : 'bg-slate-400'
+              <div className={`w-12 h-12 rounded-xl flex items-center justify-center font-bold text-white shadow-xs ${
+                isTruckDeployed ? 'bg-[#2874f0]' : 'bg-slate-400'
               }`}>
                 <Truck className="w-6 h-6" />
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <h2 className="text-base font-bold text-slate-900">
+                  <h2 className="text-base font-extrabold text-slate-900">
                     {driverTrip.origin} <span className="text-slate-400">→</span> {driverTrip.destination}
                   </h2>
-                  <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                  <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
                     isTruckDeployed ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-200 text-slate-600'
                   }`}>
                     {isTruckDeployed ? 'Active Deployed Route' : 'Offline / Inactive'}
@@ -149,7 +149,7 @@ export const DriverIncomingRequestsPage = () => {
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setCurrentView('driver-dashboard')}
-                className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl transition-all"
+                className="px-4 py-2 bg-blue-50 hover:bg-blue-100 text-[#2874f0] text-xs font-bold rounded-xl transition-all border border-blue-200 cursor-pointer"
               >
                 Edit Route in Dashboard
               </button>
@@ -207,7 +207,7 @@ export const DriverIncomingRequestsPage = () => {
                 pendingRequests.map((req) => (
                   <div
                     key={req.id}
-                    className="bg-white rounded-3xl border-2 border-emerald-500/30 p-6 shadow-md transition-all flex flex-col md:flex-row md:items-center justify-between gap-6 hover:border-emerald-500"
+                    className="bg-white rounded-2xl border border-slate-200 border-l-4 border-l-[#2874f0] p-6 shadow-xs hover:shadow-md transition-all flex flex-col md:flex-row md:items-center justify-between gap-6"
                   >
                     {/* Left Details */}
                     <div className="space-y-3 flex-1">

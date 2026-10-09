@@ -4,28 +4,29 @@ import { Logo } from '../components/Logo';
 import { ArrowLeft, Lock, Mail } from 'lucide-react';
 
 export const CustomerAuthPage = () => {
-  const { setCurrentView, setCurrentUser } = useApp();
+  const { setCurrentView, loginUser } = useApp();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!email.trim() || !password.trim()) {
       return;
     }
 
-    const safeName = email.trim().split('@')[0]?.replace(/[._-]/g, ' ') || 'Customer';
-
-    setCurrentUser({
-      id: 'c1',
-      name: safeName.charAt(0).toUpperCase() + safeName.slice(1),
-      email: email.trim(),
-      role: 'customer',
-      avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80'
-    });
-    setCurrentView('customer-dashboard');
+    setLoading(true);
+    setError('');
+    try {
+      await loginUser(email, password, 'customer');
+    } catch (err) {
+      setError(err.message || 'Login failed.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -37,7 +38,7 @@ export const CustomerAuthPage = () => {
         <ArrowLeft className="w-4 h-4" /> Back to Home
       </button>
 
-      <div className="w-full max-w-md bg-white rounded-3xl border border-slate-200 shadow-xl p-8 space-y-6">
+      <div className="w-full max-w-md bg-white rounded-2xl border border-slate-200 border-t-4 border-t-emerald-500 shadow-xs p-8 space-y-6">
         <div className="text-center space-y-3">
           <div className="inline-block">
             <Logo size="normal" onClick={() => setCurrentView('landing')} />

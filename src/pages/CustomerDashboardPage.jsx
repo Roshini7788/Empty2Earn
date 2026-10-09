@@ -50,19 +50,19 @@ export const CustomerDashboardPage = () => {
         {/* Main Content */}
         <main className="p-8 max-w-5xl mx-auto w-full space-y-6">
           {/* Welcome Greeting Banner */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-xs">
             <div>
-              <h2 className="text-2xl font-extrabold text-slate-900">
+              <h2 className="text-xl font-extrabold text-slate-900">
                 Good morning, {currentUser?.name?.split(' ')[0] || 'Priya'}!
               </h2>
-              <p className="text-xs text-slate-600 mt-1">
+              <p className="text-xs text-slate-500 mt-0.5">
                 Let's make your deliveries more efficient and eco-friendly today.
               </p>
             </div>
 
-            <div className="flex items-center gap-2 bg-emerald-50 border border-emerald-200 px-3.5 py-2 rounded-2xl text-emerald-800 text-xs font-semibold">
-              <Leaf className="w-4 h-4 text-emerald-600" />
-              <span>Cleaner deliveries, Greener tomorrow</span>
+            <div className="flex items-center gap-2 bg-emerald-50 border border-emerald-200 px-3.5 py-1.5 rounded-full text-emerald-800 text-xs font-bold">
+              <Leaf className="w-3.5 h-3.5 text-emerald-600" />
+              <span>Cleaner Deliveries • Greener Tomorrow</span>
             </div>
           </div>
 
@@ -71,64 +71,64 @@ export const CustomerDashboardPage = () => {
             {/* Action Card 1: Request Your Pickup */}
             <div 
               onClick={() => setCurrentView('request-pickup')}
-              className="group bg-gradient-to-br from-emerald-50/80 via-white to-teal-50/40 p-8 rounded-3xl border border-emerald-200/90 shadow-sm hover:shadow-xl hover:border-emerald-400 transition-all cursor-pointer relative overflow-hidden"
+              className="group bg-white p-6 rounded-2xl border border-slate-200 border-t-4 border-t-emerald-500 shadow-xs hover:shadow-md transition-all cursor-pointer space-y-4"
             >
-              <div className="flex items-start justify-between">
-                <div className="w-16 h-16 rounded-2xl bg-emerald-600 text-white flex items-center justify-center shadow-lg shadow-emerald-600/25 group-hover:scale-110 transition-transform">
-                  <Truck className="w-8 h-8" />
+              <div className="flex items-center justify-between">
+                <div className="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold group-hover:bg-emerald-600 group-hover:text-white transition-colors">
+                  <Truck className="w-6 h-6" />
                 </div>
-                <div className="w-9 h-9 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center group-hover:translate-x-1 transition-transform">
-                  <ArrowRight className="w-5 h-5" />
-                </div>
+                <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-700">
+                  Save up to 40%
+                </span>
               </div>
 
-              <div className="mt-8 space-y-2">
-                <h3 className="text-xl font-extrabold text-slate-900 group-hover:text-emerald-700 transition-colors">
+              <div className="space-y-1">
+                <h3 className="text-lg font-extrabold text-slate-900 group-hover:text-emerald-700 transition-colors">
                   Request Your Pickup
                 </h3>
-                <p className="text-xs text-slate-600 leading-relaxed">
-                  Find the best return journey drivers for your shipment & save up to 40% on shipping.
+                <p className="text-xs text-slate-500 leading-relaxed">
+                  Find empty return journey trucks for your cargo & reduce freight logistics costs.
                 </p>
               </div>
 
-              <div className="mt-8 pt-4 border-t border-emerald-100/80 flex items-center gap-2 text-xs font-bold text-emerald-700">
-                <span>Start Pickup Request</span>
-                <ChevronRight className="w-4 h-4" />
+              <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-emerald-700">
+                <span>Start Pickup Wizard →</span>
+                <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </div>
             </div>
 
             {/* Action Card 2: Track Your Request */}
             <div 
               onClick={() => setCurrentView('track-request')}
-              className="group bg-gradient-to-br from-blue-50/80 via-white to-sky-50/40 p-8 rounded-3xl border border-blue-200/90 shadow-sm hover:shadow-xl hover:border-blue-400 transition-all cursor-pointer relative overflow-hidden"
+              className="group bg-white p-6 rounded-2xl border border-slate-200 border-t-4 border-t-[#2874f0] shadow-xs hover:shadow-md transition-all cursor-pointer space-y-4"
             >
-              <div className="flex items-start justify-between">
-                <div className="w-16 h-16 rounded-2xl bg-blue-600 text-white flex items-center justify-center shadow-lg shadow-blue-600/25 group-hover:scale-110 transition-transform">
-                  <MapPin className="w-8 h-8" />
+              <div className="flex items-center justify-between">
+                <div className="w-12 h-12 rounded-xl bg-blue-50 text-[#2874f0] flex items-center justify-center font-bold group-hover:bg-[#2874f0] group-hover:text-white transition-colors">
+                  <MapPin className="w-6 h-6" />
                 </div>
-                <div className="w-9 h-9 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center group-hover:translate-x-1 transition-transform">
-                  <ArrowRight className="w-5 h-5" />
-                </div>
+                <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-100 text-blue-700">
+                  Live Dynamic GPS
+                </span>
               </div>
 
-              <div className="mt-8 space-y-2">
-                <h3 className="text-xl font-extrabold text-slate-900 group-hover:text-blue-700 transition-colors">
+              <div className="space-y-1">
+                <h3 className="text-lg font-extrabold text-slate-900 group-hover:text-[#2874f0] transition-colors">
                   Track Your Request
                 </h3>
-                <p className="text-xs text-slate-600 leading-relaxed">
-                  Check live shipment status, driver details, and interactive simulated GPS route map.
+                <p className="text-xs text-slate-500 leading-relaxed">
+                  Check live shipment progress, driver coordinates, and secure delivery handover OTP.
                 </p>
               </div>
 
-              <div className="mt-8 pt-4 border-t border-blue-100/80 flex items-center gap-2 text-xs font-bold text-blue-700">
-                <span>View Live Tracking</span>
-                <ChevronRight className="w-4 h-4" />
+              <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-[#2874f0]">
+                <span>View Live Tracking →</span>
+                <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </div>
             </div>
           </div>
 
-          {/* VERY SMALL & COMPACT RECENT REQUESTS SECTION */}
-          <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+          {/* COMPACT RECENT REQUESTS SECTION */}
+          <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-4">
             <div className="flex items-center justify-between pb-2 border-b border-slate-100">
               <span className="text-xs font-bold text-slate-800 uppercase tracking-wider">Recent Activity</span>
               <button

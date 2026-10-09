@@ -43,8 +43,8 @@ export const PickupRequestWizard = () => {
     setPickupFormStep(3);
   };
 
-  const handleFinalSubmit = () => {
-    const newId = submitPickupRequest();
+  const handleFinalSubmit = async () => {
+    const newId = await submitPickupRequest();
     setCurrentView('track-request');
   };
 
@@ -76,7 +76,7 @@ export const PickupRequestWizard = () => {
         <main className="p-8 max-w-4xl mx-auto w-full space-y-8">
           
           {/* Step Progress Timeline Header */}
-          <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
+          <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs">
             <div className="flex items-center justify-between max-w-2xl mx-auto relative">
               <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-slate-200 -translate-y-1/2 -z-0"></div>
 
@@ -114,7 +114,7 @@ export const PickupRequestWizard = () => {
 
           {/* STEP 1: PICKUP & PACKAGE DETAILS FORM */}
           {pickupFormStep === 1 && (
-            <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6">
+            <div className="bg-white p-8 rounded-2xl border border-slate-200 border-t-4 border-t-emerald-500 shadow-xs space-y-6">
               <h2 className="text-xl font-bold text-slate-900 pb-2 border-b border-slate-100">Request Your Pickup</h2>
 
               <div className="space-y-4">
@@ -481,7 +481,7 @@ export const PickupRequestWizard = () => {
           {/* STEP 2: AVAILABLE DRIVERS LIST */}
           {pickupFormStep === 2 && (
             <div className="space-y-6">
-              <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div className="bg-white p-6 rounded-2xl border border-slate-200 border-t-4 border-t-[#2874f0] shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
                   <h2 className="text-xl font-bold text-slate-900">Available Drivers for Your Shipment</h2>
                   <p className="text-xs text-slate-600 mt-1">
@@ -615,7 +615,7 @@ export const PickupRequestWizard = () => {
 
           {/* STEP 3: CONFIRMATION SUMMARY */}
           {pickupFormStep === 3 && (
-            <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6">
+            <div className="bg-white p-8 rounded-2xl border border-slate-200 border-t-4 border-t-emerald-500 shadow-xs space-y-6">
               <h2 className="text-xl font-bold text-slate-900 pb-2 border-b border-slate-100">Confirm Driver & Send Request</h2>
 
               {/* Selected Driver Summary */}

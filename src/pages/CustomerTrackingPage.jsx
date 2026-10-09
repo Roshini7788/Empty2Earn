@@ -59,8 +59,8 @@ export const CustomerTrackingPage = () => {
 
         <main className="p-8 max-w-5xl mx-auto w-full space-y-6">
           
-          {/* Main Tracking Details Card matching Reference Screen #10 */}
-          <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6">
+          {/* Main Tracking Details Card matching Carrier Dashboard palette */}
+          <div className="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 border-t-4 border-t-[#2874f0] shadow-xs space-y-6">
             
             {/* Header Row: Request ID & Status Badge */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100">

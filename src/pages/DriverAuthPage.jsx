@@ -4,31 +4,29 @@ import { Logo } from '../components/Logo';
 import { ArrowLeft, Lock, Mail } from 'lucide-react';
 
 export const DriverAuthPage = () => {
-  const { setCurrentView, setCurrentUser } = useApp();
+  const { setCurrentView, loginUser } = useApp();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!email.trim() || !password.trim()) {
       return;
     }
 
-    const safeName = email.trim().split('@')[0]?.replace(/[._-]/g, ' ') || 'Carrier';
-
-    setCurrentUser({
-      id: 'd1',
-      name: safeName.charAt(0).toUpperCase() + safeName.slice(1),
-      email: email.trim(),
-      role: 'driver',
-      rating: 4.8,
-      deliveries: 124,
-      vehicle: 'Truck (18m³)',
-      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80'
-    });
-    setCurrentView('driver-dashboard');
+    setLoading(true);
+    setError('');
+    try {
+      await loginUser(email, password, 'driver');
+    } catch (err) {
+      setError(err.message || 'Login failed.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -40,7 +38,7 @@ export const DriverAuthPage = () => {
         <ArrowLeft className="w-4 h-4" /> Back to Home
       </button>
 
-      <div className="w-full max-w-md bg-white rounded-3xl border border-slate-200 shadow-xl p-8 space-y-6">
+      <div className="w-full max-w-md bg-white rounded-2xl border border-slate-200 border-t-4 border-t-[#2874f0] shadow-xs p-8 space-y-6">
         <div className="text-center space-y-3">
           <div className="inline-block">
             <Logo size="normal" onClick={() => setCurrentView('landing')} />

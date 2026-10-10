@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { Logo } from '../components/Logo';
-import { ArrowLeft, Lock, Mail } from 'lucide-react';
+import { ArrowLeft, Lock, Mail, AlertCircle, CheckCircle2 } from 'lucide-react';
 
 export const DriverAuthPage = () => {
   const { setCurrentView, loginUser } = useApp();
@@ -10,6 +10,7 @@ export const DriverAuthPage = () => {
   const [rememberMe, setRememberMe] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -20,11 +21,15 @@ export const DriverAuthPage = () => {
 
     setLoading(true);
     setError('');
+    setSuccess('');
     try {
-      await loginUser(email, password, 'driver');
+      const user = await loginUser(email, password, 'driver', false);
+      setSuccess(`Log in successful! Welcome back, ${user?.name || ''}`);
+      setTimeout(() => {
+        setCurrentView('driver-dashboard');
+      }, 700);
     } catch (err) {
       setError(err.message || 'Login failed.');
-    } finally {
       setLoading(false);
     }
   };
@@ -33,7 +38,7 @@ export const DriverAuthPage = () => {
     <div className="min-h-screen bg-slate-50 flex flex-col justify-center items-center p-4 font-sans relative">
       <button
         onClick={() => setCurrentView('landing')}
-        className="absolute top-6 left-6 text-sm text-slate-500 hover:text-slate-900 flex items-center gap-1.5 font-medium transition-colors"
+        className="absolute top-6 left-6 text-sm text-slate-500 hover:text-slate-900 flex items-center gap-1.5 font-medium transition-colors cursor-pointer"
       >
         <ArrowLeft className="w-4 h-4" /> Back to Home
       </button>
@@ -46,6 +51,20 @@ export const DriverAuthPage = () => {
           <h2 className="text-2xl font-extrabold text-slate-900">Carrier Login</h2>
           <p className="text-xs text-slate-500">Access the carrier portal, manage return trips, and accept shipments.</p>
         </div>
+
+        {success && (
+          <div className="p-3.5 rounded-xl bg-emerald-50 border border-emerald-300 text-emerald-800 text-xs flex items-center gap-2 font-bold shadow-xs">
+            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+            <span>{success}</span>
+          </div>
+        )}
+
+        {error && (
+          <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-center gap-2 font-medium">
+            <AlertCircle className="w-4 h-4 text-rose-500 shrink-0" />
+            <span>{error}</span>
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>

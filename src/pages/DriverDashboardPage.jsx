@@ -1,10 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
 import { DriverSidebar } from '../components/DriverSidebar';
-import { Truck, Route, PackageCheck, CircleDollarSign, CheckCircle2, Edit3, Plus, ArrowRight, MapPin, Calendar, Clock, Calculator, Scale, Navigation } from 'lucide-react';
+import { Truck, Route, PackageCheck, CircleDollarSign, CheckCircle2, Edit3, Plus, ArrowRight, MapPin, Calendar, Clock, Calculator, Scale, Navigation, RotateCcw } from 'lucide-react';
 
 export const DriverDashboardPage = () => {
-  const { currentUser, driverTrip, setDriverTrip, updateDriverTrip, toggleDriverAvailability, shipments, driverTotalRevenue, setCurrentView } = useApp();
+  const { 
+    currentUser, 
+    driverTrip, 
+    setDriverTrip, 
+    updateDriverTrip, 
+    toggleDriverAvailability, 
+    shipments, 
+    driverTotalRevenue, 
+    setCurrentView,
+    resetDemoData,
+    loginSuccessMessage,
+    setLoginSuccessMessage
+  } = useApp();
+
+  useEffect(() => {
+    if (loginSuccessMessage) {
+      const timer = setTimeout(() => {
+        setLoginSuccessMessage(null);
+      }, 4000);
+      return () => clearTimeout(timer);
+    }
+  }, [loginSuccessMessage, setLoginSuccessMessage]);
+
   const [showModal, setShowModal] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
 
@@ -138,8 +160,22 @@ export const DriverDashboardPage = () => {
   };
 
   return (
-    <div className="flex min-h-screen bg-slate-50 font-sans text-slate-900">
+    <div className="flex min-h-screen bg-slate-50 font-sans text-slate-900 relative">
       <DriverSidebar />
+
+      {/* Floating Login Success Toast */}
+      {loginSuccessMessage && (
+        <div className="fixed top-5 right-6 z-50 bg-emerald-600 text-white px-5 py-3 rounded-2xl shadow-xl flex items-center gap-3 border border-emerald-400">
+          <CheckCircle2 className="w-5 h-5 text-white shrink-0 animate-bounce" />
+          <span className="text-xs font-bold">{loginSuccessMessage}</span>
+          <button 
+            onClick={() => setLoginSuccessMessage(null)}
+            className="text-white/80 hover:text-white font-bold text-sm ml-2 cursor-pointer"
+          >
+            ✕
+          </button>
+        </div>
+      )}
 
       <div className="flex-1 flex flex-col min-w-0 overflow-y-auto">
         {/* Top Header */}
@@ -149,7 +185,17 @@ export const DriverDashboardPage = () => {
             <p className="text-xs text-slate-500">Manage return journeys & accept matching freight orders</p>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
+            {/* Reset App to Beginning Button */}
+            <button
+              onClick={resetDemoData}
+              title="Reset all data and return to starting page"
+              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl border border-rose-200 bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-bold transition-all hover:scale-105 cursor-pointer shadow-xs"
+            >
+              <RotateCcw className="w-3.5 h-3.5" />
+              <span>Reset to Start</span>
+            </button>
+
             {/* Availability Toggle */}
             <div className="flex items-center gap-2 bg-slate-50 px-3.5 py-1.5 rounded-full border border-slate-200">
               <span className="text-xs font-semibold text-slate-700">Status:</span>

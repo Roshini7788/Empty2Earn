@@ -338,6 +338,7 @@ export const AppProvider = ({ children }) => {
 
   const [currentView, setCurrentView] = useState('landing');
   const [dbConnected, setDbConnected] = useState(false);
+  const [loginSuccessMessage, setLoginSuccessMessage] = useState(null);
 
   const [driverTrip, setDriverTrip] = useState(() => {
     const saved = localStorage.getItem('e2e_driver_trip');
@@ -498,11 +499,12 @@ export const AppProvider = ({ children }) => {
   }, []);
 
   // 3. User Authentication Methods with Backend Persistence
-  const loginUser = async (email, password, role = 'customer') => {
+  const loginUser = async (email, password, role = 'customer', autoNavigate = true) => {
     try {
       const res = await api.login(email, password, role);
       if (res?.user) {
         setCurrentUser(res.user);
+        setLoginSuccessMessage(`Log in successful! Welcome back, ${res.user.name}.`);
         if (role === 'driver') {
           api.fetchTrips().then(trips => {
             if (Array.isArray(trips) && trips.length) {
@@ -538,7 +540,9 @@ export const AppProvider = ({ children }) => {
             }
           }).catch(() => {});
         }
-        setCurrentView(role === 'driver' ? 'driver-dashboard' : 'customer-dashboard');
+        if (autoNavigate) {
+          setCurrentView(role === 'driver' ? 'driver-dashboard' : 'customer-dashboard');
+        }
         return res.user;
       }
     } catch (err) {
@@ -557,7 +561,10 @@ export const AppProvider = ({ children }) => {
         : 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80'
     };
     setCurrentUser(fallbackUser);
-    setCurrentView(role === 'driver' ? 'driver-dashboard' : 'customer-dashboard');
+    setLoginSuccessMessage(`Log in successful! Welcome back, ${fallbackUser.name}.`);
+    if (autoNavigate) {
+      setCurrentView(role === 'driver' ? 'driver-dashboard' : 'customer-dashboard');
+    }
     return fallbackUser;
   };
 
@@ -868,12 +875,14 @@ export const AppProvider = ({ children }) => {
 
   const resetDemoData = () => {
     localStorage.removeItem('e2e_user');
+    localStorage.removeItem('e2e_user_backup');
     localStorage.removeItem('e2e_token');
     localStorage.removeItem('e2e_view');
     localStorage.removeItem('e2e_shipments');
     localStorage.removeItem('e2e_driver_trip');
     localStorage.removeItem('e2e_driver_trips_history');
     localStorage.removeItem('e2e_notifications');
+    sessionStorage.clear();
     setShipments(INITIAL_SHIPMENTS);
     setDriverTrip(INITIAL_DRIVER_TRIP);
     setDriverTripsHistory(INITIAL_DRIVER_TRIPS_HISTORY);
@@ -881,6 +890,7 @@ export const AppProvider = ({ children }) => {
     setActiveShipmentId('REQ-1003');
     setPickupFormStep(1);
     setCurrentUser(null);
+    setLoginSuccessMessage(null);
     setCurrentView('landing');
   };
 
@@ -968,7 +978,9 @@ export const AppProvider = ({ children }) => {
       submitPickupRequest,
       uploadDocument,
       updateDocumentVerificationStatus,
-      resetDemoData
+      resetDemoData,
+      loginSuccessMessage,
+      setLoginSuccessMessage
     }}>
       {children}
     </AppContext.Provider>
